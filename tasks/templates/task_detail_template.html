@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'taskers:userview' %}">Tasks</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Task details</li>
+    </ol>
+</nav>
+{% if messages %}
+    {% include 'includes/messages.html' %}
+{% endif %}
+{% if instance.is_done %}
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Task Details<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right">Delete</a></h5>
+                
+                <hr>
+                <h4>{{ instance.name|title }}</h4>
+                <div class="text-details">
+                    <p class="card-text">
+                        <small><strong>Task type: </strong>{{ instance.task_type|title }}</small> <br>
+                        <small><strong>Task Categories: </strong>{{ instance.task_category|title }}</small> <br>
+                        <small><strong>Paradise link: </strong><a href="{{ instance.paradise_link }}">{{ instance.paradise_link }}</a></small> <br>
+                        <small><strong>Date Started: </strong>{{ instance.created|date }}</small> <br>
+                    </p>
+                    {% if instance.is_priority %}
+                    <div class="priority">
+                        <strong class="priority">Note: </strong><small>This task is priority.</small>
+                    </div>
+                    <br>
+                    {% endif %}
+                    {% if instance.is_done %}
+                    <div class="alert alert-success" role="alert">
+                        <strong>Task status: Completed.</strong><br>
+                        <small>Completion date: {{ instance.updated|date }} | by {{ instance.user|title }}</small>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info" role="alert">
+                        <strong>Working on progress...</strong>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <h5>Task notes</h5>
+                <hr>
+                {% for note in instance.taskremark_set.all %}
+                    <div class="note">
+                        {% if not note.remarks %}
+                            <p>No notes here...</p>
+                        {% else %}
+                            <small><u>Posted by <a href="">{{ note.user|title }}</a></u></small>
+                            <p>{{ note.remarks }}</p>
+                            <small>Posted {{note.created|timesince}} ago</a></small> <br>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-sm-4">
+        <div class="card text-white bg-dark mb-3">
+            <div class="card-body">
+                <h5>Update Task</h5>
+                <hr>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input class="btn btn-primary btn-sm" type="submit" value="Update">
+                    <!-- <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">Cancel</a> -->
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Task Details<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right">Delete</a></h5>
+                <hr>
+                <h4>{{ instance.name|title }}</h4>
+                <div class="text-details">
+                    <p class="card-text">
+                        <small><strong>Task type: </strong>{{ instance.task_type|title }}</small> <br>
+                        <small><strong>Task Categories: </strong>{{ instance.task_category|title }}</small> <br>
+                        <small><strong>Task link: </strong><a href="{{ instance.paradise_link }}">{{ instance.paradise_link }}</a></small> <br>
+                        <small><strong>Date Started: </strong>{{ instance.created|date }}</small> <br>
+                    </p>
+                    {% if instance.is_priority %}
+                    <div class="priority">
+                        <strong class="priority">Note: </strong><small>This task is priority.</small>
+                    </div>
+                    <br>
+                    {% endif %}
+                    {% if instance.is_done %}
+                    <div class="alert alert-success" role="alert">
+                        <strong>Task status: Completed.</strong><br>
+                        <small>Completion date: {{ instance.updated|date }} | by {{ instance.user|title }}</small>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info" role="alert">
+                        <strong>Work on progress...</strong>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5>Task notes</h5>
+                <hr>
+                {% for note in instance.taskremark_set.all %}
+                    <div class="note">
+                        {% if not note.remarks %}
+                        <p>No notes here...</p>
+                        {% else %}
+                            <small><u>Posted by <a href="">{{ note.user|title }}</a> </u><a href="{% url 'taskers:delete_note' note.pk %}" class="float-right delete-note">x</a></small>
+                            <p>{{ note.remarks }}</p>
+                            <small>Posted {{note.created|timesince}} ago</small> <br>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#addNote">
+                    Add note
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addNote" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Add note</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                {{ remark_form|crispy }}
+            </div>
+            <div class="modal-footer">
+                <input type="submit" class="btn btn-primary btn-sm" value="Save">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

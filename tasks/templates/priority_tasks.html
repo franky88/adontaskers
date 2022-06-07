@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-sm-8">
+        <h2>Priority Tasks</h2>
+        <table class="table table-hover" id="tasks">
+            <thead>
+                <tr>
+                    <th>My Tasks</th>
+                    <th>Date Started</th>
+                    <th>Task Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks_priority %}
+                <tr {% if not task.is_done %} style="background-color: rgb(229, 229, 229);" {% endif %}>
+                    <td>
+                        <div>
+                            <h4>{{ task.name|title }}</h4>
+                            <small><strong>Task categories:</strong>  {{ task.task_category|title }}</small> <br>
+                            <small><strong>Task type:</strong>  {{ task.task_type|title }}</small> <br>
+                            {% if task.is_priority %}
+                            <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small> <br>
+                            {% endif %}
+                            <br>
+                            {% if not task.is_done %}
+                            <a href="{% url 'taskers:update' task.slug %}" class="btn btn-outline-info btn-sm">Update</a>
+                            <a href="{% url 'taskers:delete' task.slug %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                            {% else %}
+                            <a href="{% url 'taskers:details' task.slug %}" class="btn btn-outline-success btn-sm">Details</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <strong>Date started</strong> <br>
+                        {{ task.created|date }}
+                    </td>
+                    <td>
+                        
+                        {% if task.is_done %}
+                        <div class="card border-success text-success text-center p-3">
+                            <div class="card-body">
+                                <div>
+                                    <strong>Completed!</strong> <br>
+                                    <small>{{ task.updated|date }} | by {{task.user}}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div>
+                                    Work in progress...
+                                    <br>
+                                    <small>By {{task.user|title}}</small> 
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+    <!-- <div class="col-sm-4">
+        <div class="card">
+            <div class="card-body">
+                <h2>Task information</h2>
+                <hr>
+            </div>
+        </div>
+    </div> -->
+</div>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-7">
+        <div class="card">
+            <div class="card-body">
+                <h3>{{ title|title }}</h3>
+                <hr>
+                <h4 class="card-title">{{ instance.name|title }}</h4>
+                <hr>
+                <div class="text-details">
+                    <p class="card-text">
+                        <small><strong>Task type: </strong>{{ instance.task_type|title }}</small> <br>
+                        <small><strong>Task Categories: </strong>{{ instance.task_category|title }}</small> <br>
+                        <small><strong>Paradise link: </strong><a href="{{ instance.paradise_link }}">{{ instance.paradise_link }}</a></small> <br>
+                        <small><strong>Date Started: </strong>{{ instance.created|date }}</small> <br>
+                    </p>
+                    <div class="alert alert-success" role="alert">
+                        <strong>Task status: Completed.</strong> <br>
+                        <small>Completion date: {{ instance.updated|date }} | by {{ instance.user|title }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <div class="card">
+            <div class="card-body">
+                <h3>Task notes</h3>
+                <hr>
+                {% for note in instance.taskremark_set.all %}
+                    {% if note.remarks %}
+                        {{ note.remarks }}
+                        <br>
+                        <small>Posted {{note.created|timesince}} ago | by <a href="">{{ note.user|title }}</a></small> <br>
+                        <hr>
+                    {% else %}
+                        <p>No notes here...</p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

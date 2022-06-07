@@ -1,0 +1,40 @@
+<div class="col-sm-4">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h2>{{title|title}}</h2>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <a href="{% url 'taskers:priority' %}">Priority Tasks</a>
+                  {% if tasks_priority %}
+                  <span class="badge badge-danger badge-pill">{{ tasks_priority }}</span>
+                  {% else %}
+                  <span class="badge badge-light badge-pill">{{ tasks_priority }}</span>
+                  {% endif %}
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <a href="{% url 'taskers:home' %}">Work in Progress</a>
+                  <span class="badge badge-primary badge-pill">{{ user_tasks_count }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'taskers:completedToday' %}">Completed tasks today</a>
+                    <span class="badge badge-success badge-pill">{{ done_tasks_today }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h4>Task Archived</h4>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  <a href="{% url 'taskers:priority' %}">Tasks Yesterday</a>
+                  <span class="badge badge-info badge-pill">{{ task_yesterday }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{% url 'taskers:completed' %}">Completed Tasks</a>
+                    <span class="badge badge-success badge-pill">{{ done }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="row">
+    <div class="col-sm-7">
+        <div class="card">
+            <div class="card-body">
+                <h3>Update task</h3>
+                <hr>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <input class="btn btn-primary btn-sm" type="submit" value="Update">
+                    <a href="{% url 'taskers:home' %}" class="btn btn-secondary btn-sm">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h3>Task notes</h3>
+                <hr>
+                {% for remark in task.taskremark_set.all %}
+                    {{ remark.remarks }} <br>
+                    <small>Posted {{remark.created|timesince}} ago | by <a href="">{{ remark.user|title }}</a></small>
+                    <a href="{% url 'taskers:delete_note' remark.pk %}" class="float-right">x</a>
+                    <hr>
+                {% endfor %}
+                <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#addNote">
+                    Add note
+                </button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h3>Notes</h3>
+                <hr>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Placeat, cumque cum. Quasi labore numquam aperiam dolor earum perferendis amet consequatur autem assumenda minima, nesciunt reprehenderit, aspernatur tempora magni? Quidem, nobis?</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="addNote" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Add note</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="modal-body">
+                {{ remark_form|crispy }}
+            </div>
+            <div class="modal-footer">
+                <input type="submit" class="btn btn-primary btn-sm" value="Save">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'taskers:userview' %}">Tasks</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Task delete</li>
+    </ol>
+</nav>
+<div class="row">
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header">
+                {{title|title}}
+            </div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                <div class="card-body">
+                    <p>Are you sure you want to delete <strong>{{ task.name|title }}</strong>?</p>
+                </div>
+                <div class="card-footer">
+                    <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">No</a>
+                    <input type="submit" value="Yes" class="btn btn-danger btn-sm">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

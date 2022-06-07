@@ -1,0 +1,12 @@
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+    {% if instance %}
+    <strong>Ta dah! </strong> <small>{{ message }}</small>
+    {% else %}
+    <p><strong>Ta dah! </strong>{{ message }}</p>
+    {% endif %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endfor %}

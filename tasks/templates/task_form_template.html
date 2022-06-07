@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'taskers:userview' %}">Tasks</a></li>
+      <!-- <li class="breadcrumb-item active" aria-current="page">Library</li> -->
+    </ol>
+</nav>
+{% if messages %}
+    {% include 'includes/messages.html' %}
+{% endif %}
+<div class="row">
+    <div class="col-sm-4">
+        <div class="card text-white bg-dark">
+            <div class="card-body">
+                <h4>New task</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input class="btn btn-primary btn-sm" type="submit" value="Create">
+                    <!-- <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">Cancel</a> -->
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <h2>Task list</h2>
+        <table class="table table-hover" id="tasks">
+            <thead>
+                <tr>
+                    <th>My Tasks</th>
+                    <th>Date Started</th>
+                    <th>Task Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if request.user.is_superuser %}
+                {% for task in tasks %}
+                <tr {% if not task.is_done %} style="background-color: rgb(244, 244, 244);" {% endif %}>
+                    <td>
+                        <div>
+                            <h5>{{ task.name|title }}</h5>
+                            <p style="line-height: 1;">
+                                <small><strong>Task categories:</strong>  {{ task.task_category|title }}</small> <br>
+                                <small><strong>Task type:</strong>  {{ task.task_type|title }}</small> <br>
+                                {% if task.is_priority %}
+                                    <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
+                                {% endif %}
+                            </p>
+                            
+                            {% if not task.is_done %}
+                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm">Update</a>
+                                <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                            {% else %}
+                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm">Details</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <strong>Date started</strong> <br>
+                        {{ task.created|date }}
+                    </td>
+                    <td>
+                        
+                        {% if task.is_done %}
+                        <div class="alert alert-success">
+                            <div>
+                                <strong>Completed!</strong> <br>
+                                <small>{{ task.updated|date }} | by {{task.user}}</small>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <div >
+                                <strong>Work in progress...</strong> 
+                                <br>
+                                <small>By {{task.user|title}}</small> 
+                            </div>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                {% for task in request.user.task_set.all %}
+                <tr {% if not task.is_done %} style="background-color: rgb(244, 244, 244);" {% endif %}>
+                    <td>
+                        <div>
+                            <h5>{{ task.name|title }}</h5>
+                            <p style="line-height: 1;">
+                                <small><strong>Task categories:</strong>  {{ task.task_category|title }}</small> <br>
+                                <small><strong>Task type:</strong>  {{ task.task_type|title }}</small> <br>
+                                {% if task.is_priority %}
+                                    <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
+                                {% endif %}
+                            </p>
+                            
+                            {% if not task.is_done %}
+                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm">Update</a>
+                                <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm">Delete</a>
+                            {% else %}
+                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm">Details</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <strong>Date started</strong> <br>
+                        {{ task.created|date }}
+                    </td>
+                    <td>
+                        
+                        {% if task.is_done %}
+                        <div class="alert alert-success">
+                            <div>
+                                <strong>Completed!</strong> <br>
+                                <small>{{ task.updated|date }} | by {{task.user}}</small>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <div >
+                                <strong>Work in progress...</strong> 
+                                <br>
+                                <small>By {{task.user|title}}</small> 
+                            </div>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+    
+</div>
+{% endblock %}
