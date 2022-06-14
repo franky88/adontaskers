@@ -15,7 +15,7 @@
     <div class="col-sm-6">
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">Task Details<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right">Delete</a></h5>
+                <h5 class="card-title">Task Details<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right"><i class="fa-regular fa-trash-can"></i></a></h5>
                 
                 <hr>
                 <h4>{{ instance.name|title }}</h4>
@@ -85,7 +85,7 @@
     <div class="col-sm-8">
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">Task Details<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right">Delete</a></h5>
+                <h5 class="card-title">Task Details<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right"><i class="fa-regular fa-trash-can"></i></a></h5>
                 <hr>
                 <h4>{{ instance.name|title }}</h4>
                 <div class="text-details">
@@ -123,7 +123,7 @@
                         {% if not note.remarks %}
                         <p>No notes here...</p>
                         {% else %}
-                            <small><u>Posted by <a href="">{{ note.user|title }}</a> </u><a href="{% url 'taskers:delete_note' note.pk %}" class="float-right delete-note">x</a></small>
+                            <small><u>Posted by <a href="">{{ note.user|title }}</a> </u><a href="{% url 'taskers:delete_note' note.pk %}" class="float-right delete-note"><i class="fa-regular fa-trash-can"></i></a></small>
                             <p>{{ note.remarks }}</p>
                             <small>Posted {{note.created|timesince}} ago</small> <br>
                         {% endif %}

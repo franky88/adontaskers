@@ -10,129 +10,202 @@
 {% if messages %}
     {% include 'includes/messages.html' %}
 {% endif %}
-<div class="row">
+<div class="row mb-3">
     <div class="col-sm-4">
-        <div class="card text-white bg-dark">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">
+                <i class="fa fa-calendar-alt"></i> Tasks today <small class="float-right">{{ today|date }}</small>
+            </div>
             <div class="card-body">
-                <h4>New task</h4>
-                <form method="POST">
-                    {% csrf_token %}
-                    {{ form|crispy }}
-                    <input class="btn btn-primary btn-sm" type="submit" value="Create">
-                    <!-- <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">Cancel</a> -->
-                </form>
+                <small><span class="badge badge-primary badge-pill">{{ priority_tasks_today.count }}</span> Priority</small> <br>
+                <small><span class="badge badge-primary badge-pill">{{ wip_tasks_today.count }}</span> Work in progress</small> <br>
+                <small><span class="badge badge-primary badge-pill">{{ completed_tasks_today.count }}</span> Completed</small> <br>
             </div>
         </div>
     </div>
-    <div class="col-sm-8">
-        <h2>Task list</h2>
-        <table class="table table-hover" id="tasks">
-            <thead>
-                <tr>
-                    <th>My Tasks</th>
-                    <th>Date Started</th>
-                    <th>Task Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% if request.user.is_superuser %}
-                {% for task in tasks %}
-                <tr {% if not task.is_done %} style="background-color: rgb(244, 244, 244);" {% endif %}>
-                    <td>
-                        <div>
-                            <h5>{{ task.name|title }}</h5>
-                            <p style="line-height: 1;">
-                                <small><strong>Task categories:</strong>  {{ task.task_category|title }}</small> <br>
-                                <small><strong>Task type:</strong>  {{ task.task_type|title }}</small> <br>
-                                {% if task.is_priority %}
-                                    <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
+    <div class="col-sm-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">
+                <i class="fa fa-calendar-alt"></i> Tasks yesterday <small class="float-right">{{ yesterday|date }}</small>
+            </div>
+            <div class="card-body">
+                <small><span class="badge badge-primary badge-pill">{{ priority_tasks_yesterday.count }}</span> Priority</small> <br>
+                <small><span class="badge badge-primary badge-pill">{{ wip_tasks_yesterday.count }}</span> Work in progress</small> <br>
+                <small><span class="badge badge-primary badge-pill">{{ completed_tasks_yesterday.count }}</span> Completed</small> <br>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">
+                <i class="fa fa-calendar-alt"></i> All tasks
+            </div>
+            <div class="card-body">
+                <small><span class="badge badge-primary badge-pill">{{ priority_tasks.count }}</span> Priority</small> <br>
+                <small><span class="badge badge-primary badge-pill">{{ wip_tasks.count }}</span> Work in progress</small> <br>
+                <small><span class="badge badge-primary badge-pill">{{ completed_tasks.count }}</span> Completed</small> <br>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>
+                    My Tasks
+                    <small>
+                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
+                            <i class="fa-regular fa-square-plus"></i> Add Task
+                        </button>
+                    </small>
+                </h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm" id="tasks">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Client Name</th>
+                            <th>Task Category</th>
+                            <th>Date Started</th>
+                            <th>Task Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if request.user.is_superuser %}
+                        {% for task in tasks %}
+                        <tr {% if not task.is_done %} style="background-color: rgb(244, 244, 244);" {% endif %}>
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+                            <td>
+                                <h5>{{ task.name|title }}</h5>
+                            </td>
+                            <td>
+                                {{ task.task_category|title }} - ({{ task.task_type|title }})
+                            </td>
+                            <td>
+                                <!-- <strong>Date started</strong> <br> -->
+                                {{ task.created|date }}
+                            </td>
+                            <td>
+                                {% if task.is_done %}
+                                <div class="alert alert-success">
+                                    <div>
+                                        <strong>Completed!</strong>
+                                        <small>{{ task.updated|date }} | by {{task.user}}</small> <br>
+                                        {% if task.is_priority %}
+                                            <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <div >
+                                        <strong>Work in progress...</strong> 
+                                        <small>By {{task.user|title}}</small> <br>
+                                        {% if task.is_priority %}
+                                            <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
                                 {% endif %}
-                            </p>
-                            
-                            {% if not task.is_done %}
-                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm">Update</a>
-                                <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm">Delete</a>
-                            {% else %}
-                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm">Details</a>
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td>
-                        <strong>Date started</strong> <br>
-                        {{ task.created|date }}
-                    </td>
-                    <td>
-                        
-                        {% if task.is_done %}
-                        <div class="alert alert-success">
-                            <div>
-                                <strong>Completed!</strong> <br>
-                                <small>{{ task.updated|date }} | by {{task.user}}</small>
-                            </div>
-                        </div>
-                        {% else %}
-                        <div class="alert alert-info">
-                            <div >
-                                <strong>Work in progress...</strong> 
-                                <br>
-                                <small>By {{task.user|title}}</small> 
-                            </div>
-                        </div>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                {% for task in request.user.task_set.all %}
-                <tr {% if not task.is_done %} style="background-color: rgb(244, 244, 244);" {% endif %}>
-                    <td>
-                        <div>
-                            <h5>{{ task.name|title }}</h5>
-                            <p style="line-height: 1;">
-                                <small><strong>Task categories:</strong>  {{ task.task_category|title }}</small> <br>
-                                <small><strong>Task type:</strong>  {{ task.task_type|title }}</small> <br>
-                                {% if task.is_priority %}
-                                    <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
+                            </td>
+                            <td>
+                                {% if not task.is_done %}
+                                    <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>
+                                    <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-trash-can"></i></a>
+                                {% else %}
+                                    <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-rectangle-list"></i> Details</a>
                                 {% endif %}
-                            </p>
-                            
-                            {% if not task.is_done %}
-                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm">Update</a>
-                                <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm">Delete</a>
-                            {% else %}
-                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm">Details</a>
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td>
-                        <strong>Date started</strong> <br>
-                        {{ task.created|date }}
-                    </td>
-                    <td>
-                        
-                        {% if task.is_done %}
-                        <div class="alert alert-success">
-                            <div>
-                                <strong>Completed!</strong> <br>
-                                <small>{{ task.updated|date }} | by {{task.user}}</small>
-                            </div>
-                        </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
                         {% else %}
-                        <div class="alert alert-info">
-                            <div >
-                                <strong>Work in progress...</strong> 
-                                <br>
-                                <small>By {{task.user|title}}</small> 
-                            </div>
-                        </div>
+                        {% for task in tasks %}
+                        <tr {% if not task.is_done %} style="background-color: rgb(244, 244, 244);" {% endif %}>
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+                            <td>
+                                <h5>{{ task.name|title }}</h5>
+                            </td>
+                            <td>
+                                {{ task.task_category|title }} - ({{ task.task_type|title }})
+                            </td>
+                            <td>
+                                <!-- <strong>Date started</strong> <br> -->
+                                {{ task.created|date }}
+                            </td>
+                            <td>
+                                {% if task.is_done %}
+                                <div class="alert alert-success">
+                                    <div>
+                                        <strong>Completed!</strong>
+                                        <small>{{ task.updated|date }} | by {{task.user}}</small> <br>
+                                        {% if task.is_priority %}
+                                            <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-info">
+                                    <div >
+                                        <strong>Work in progress...</strong> 
+                                        <small>By {{task.user|title}}</small> <br>
+                                        {% if task.is_priority %}
+                                            <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not task.is_done %}
+                                    <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>
+                                    <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-trash-can"></i></a>
+                                {% else %}
+                                    <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-rectangle-list"></i> Details</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
                         {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-                {% endif %}
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
     </div>
     
+</div>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">New Task</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- <h4>New task</h4> -->
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <!-- <input class="btn btn-primary btn-sm" type="submit" value="Create"> -->
+                <!-- <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">Cancel</a> -->
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <input class="btn btn-primary btn-sm" type="submit" value="Create">
+        </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

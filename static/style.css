@@ -1,0 +1,19 @@
+.text-details {
+    padding: 10px;
+    background-color: white;
+    line-height: 1.2;
+}
+.note {
+    background-color: white;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(34, 34, 34, 0.1);
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+.note small .delete-note {
+    color: red;
+    padding: 10px;
+}
+.priority {
+    color: red;
+}

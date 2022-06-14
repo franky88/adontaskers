@@ -32,6 +32,7 @@ class TaskCategory(BaseTime, models.Model):
 
 class TaskType(BaseTime, models.Model):
     name = models.CharField(max_length=60)
+    task_point = models.FloatField(default=0.0)
     # created = models.DateTimeField(auto_now_add=True)
     # updated = models.DateTimeField(auto_now=True)
 
@@ -63,7 +64,7 @@ class Task(models.Model):
         ordering = ['is_done', '-updated', '-created']
 
     def get_absolute_url(self):
-        return reverse("task_detail", kwargs={"slug": self.slug})
+        return reverse("taskdetail", kwargs={"slug": self.slug})
 
     def __str__(self):
         return self.name

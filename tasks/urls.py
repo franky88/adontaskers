@@ -5,6 +5,7 @@ app_name = "taskers"
 urlpatterns = [
     # path('', views.home, name="home"),
     path('tasks/', views.TaskListView.as_view(), name="userview"),
+    path('tasks/completed', views.CompletedTasksView.as_view(), name="completedtasks"),
     path('tasks/<slug>', views.TaskUpdateView.as_view(), name="taskdetail"),
     path('tasks/delete/<slug>', views.DeleteTaskView.as_view(), name="taskdelete"),
     # path('priority/', views.priority_task, name="priority"),
