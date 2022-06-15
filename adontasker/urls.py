@@ -20,8 +20,8 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include("tasks.urls")),
-    path('tasks-summary/', include("tasksummary.urls")),
+    path('', include("dashboards.urls")),
+    path('tasks/', include("tasks.urls")),
     path('accounts/', include('django.contrib.auth.urls')),
 ]
 if settings.DEBUG:
