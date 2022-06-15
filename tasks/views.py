@@ -26,11 +26,11 @@ class TaskListView(View):
         yesterday = today - timezone.timedelta(days=1)
         if request.user.is_superuser:
             tasks = Task.objects.all().filter(is_done=False)
-            priority_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_priority=True)
-            priority_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_done=False).filter(is_priority=True)
+            priority_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_priority=True).filter(is_done=False)
+            priority_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_priority=True).filter(is_done=False)
             priority_tasks = Task.objects.filter(is_done=False).filter(is_priority=True)
-            wip_tasks_today = Task.objects.filter(created__date=today.date()).filter(is_done=False)
-            wip_tasks_yesterday = Task.objects.filter(created__date=yesterday.date()).filter(is_done=False)
+            wip_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_done=False)
+            wip_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_done=False)
             wip_tasks = Task.objects.filter(is_done=False)
             completed_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_done=True)
             completed_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_done=True)
@@ -38,11 +38,11 @@ class TaskListView(View):
             form = AdminTaskForm(request.POST or None)
         else:
             tasks = Task.objects.all().filter(user=request.user).filter(is_done=False)
-            priority_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_done=False).filter(is_priority=True)
+            priority_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_priority=True).filter(is_done=False)
             priority_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=False).filter(is_priority=True)
             priority_tasks = Task.objects.filter(user=request.user).filter(is_done=False).filter(is_priority=True)
-            wip_tasks_today = Task.objects.filter(user=request.user).filter(created__date=today.date()).filter(is_done=False)
-            wip_tasks_yesterday = Task.objects.filter(user=request.user).filter(created__date=yesterday.date()).filter(is_done=False)
+            wip_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_done=False)
+            wip_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=False)
             wip_tasks = Task.objects.filter(user=request.user).filter(is_done=False)
             completed_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_done=True)
             completed_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=True)
@@ -187,6 +187,122 @@ class CompletedTasksView(View):
 
     def get(self, request, *args, **kwargs):
         # tasks_type = kwargs.get('')
+        if request.user.is_superuser:
+            tasks = Task.objects.filter(is_done=True)
+        else:
+            tasks = Task.objects.filter(user=request.user).filter(is_done=True)
+        context = {'tasks': tasks}
+        return render(request, self.template_name, context)
+
+class TaskTodayView(View):
+    today = timezone.now()
+    template_name = 'priority_task_today_template.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            tasks = Task.objects.filter(updated__date=self.today.date()).filter(is_priority=True).filter(is_done=False)
+        else:
+            tasks = Task.objects.filter(user=request.user).filter(updated__date=self.today.date()).filter(is_priority=True).filter(is_done=False)
+        context = {'tasks': tasks}
+        return render(request, self.template_name, context)
+
+class WIPTodayView(View):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    template_name = 'WIP_task_today_template.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            tasks = Task.objects.filter(updated__date=self.today.date()).filter(is_done=False)
+        else:
+            tasks = Task.objects.filter(user=request.user).filter(updated__date=self.today.date()).filter(is_done=False)
+        context = {'tasks': tasks}
+        return render(request, self.template_name, context)
+
+class CompletedTodayView(View):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    template_name = 'completed_task_today_template.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            tasks = Task.objects.filter(updated__date=self.today.date()).filter(is_done=True)
+        else:
+            tasks = Task.objects.filter(user=request.user).filter(updated__date=self.today.date()).filter(is_done=True)
+        context = {'tasks': tasks}
+        return render(request, self.template_name, context)
+
+class PriorityTaskYesterdayView(View):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    template_name = 'priority_task_yesterday_template.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            tasks = Task.objects.filter(updated__date=self.yesterday.date()).filter(is_priority=True).filter(is_done=False)
+        else:
+            tasks = Task.objects.filter(user=request.user).filter(updated__date=self.yesterday.date()).filter(is_priority=True).filter(is_done=False)
+        context = {'tasks': tasks}
+        return render(request, self.template_name, context)
+
+class WIPTaskYesterdayView(View):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    template_name = 'wip_task_yesterday_template.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            tasks = Task.objects.filter(updated__date=self.yesterday.date()).filter(is_done=False)
+        else:
+            tasks = Task.objects.filter(user=request.user).filter(updated__date=self.yesterday.date()).filter(is_done=False)
+        context = {'tasks': tasks}
+        return render(request, self.template_name, context)
+
+class CompletedTaskYesterdayView(View):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    template_name = 'completed_task_yesterday_template.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            tasks = Task.objects.filter(updated__date=self.yesterday.date()).filter(is_done=True)
+        else:
+            tasks = Task.objects.filter(user=request.user).filter(updated__date=self.yesterday.date()).filter(is_done=True)
+        context = {'tasks': tasks}
+        return render(request, self.template_name, context)
+
+class AllPriorityTaskView(View):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    template_name = 'all_priority_task_template.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            tasks = Task.objects.filter(is_priority=True).filter(is_done=False)
+        else:
+            tasks = Task.objects.filter(user=request.user).filter(is_priority=True).filter(is_done=False)
+        context = {'tasks': tasks}
+        return render(request, self.template_name, context)
+
+class AllWIPTaskView(View):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    template_name = 'all_wip_task_template.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_superuser:
+            tasks = Task.objects.filter(is_done=False)
+        else:
+            tasks = Task.objects.filter(user=request.user).filter(is_done=False)
+        context = {'tasks': tasks}
+        return render(request, self.template_name, context)
+
+class AllCompletedTaskView(View):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    template_name = 'all_completed_task_template.html'
+
+    def get(self, request, *args, **kwargs):
         if request.user.is_superuser:
             tasks = Task.objects.filter(is_done=True)
         else:

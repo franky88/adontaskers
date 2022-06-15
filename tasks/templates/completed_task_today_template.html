@@ -4,85 +4,18 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{% url 'taskers:userview' %}">Tasks</a></li>
-      <!-- <li class="breadcrumb-item active" aria-current="page">Library</li> -->
+      <li class="breadcrumb-item active" aria-current="page">Completed</li>
     </ol>
 </nav>
 {% if messages %}
     {% include 'includes/messages.html' %}
 {% endif %}
-<div class="row mb-3">
-    <div class="col-sm-4">
-        <div class="card border-primary mb-3">
-            <div class="card-header">
-                <i class="fa fa-calendar-alt"></i> Tasks today <small class="float-right">{{ today|date }}</small>
-            </div>
-            <div class="card-body">
-                <small>
-                    {% if priority_tasks_today.count %}
-                    <span class="badge badge-danger badge-pill">{{ priority_tasks_today.count }}</span>
-                    {% else %}
-                    <span class="badge badge-primary badge-pill">{{ priority_tasks_today.count }}</span>
-                    {% endif %}
-                    <a href="{% url 'taskers:tasksprioritytoday' %}"> Priority</a></small> <br>
-                <small><span class="badge badge-primary badge-pill">{{ wip_tasks_today.count }}</span>
-                    <a href="{% url 'taskers:workinprogresstoday' %}"> Work in progress</a></small> <br>
-                <small><span class="badge badge-primary badge-pill">{{ completed_tasks_today.count }}</span>
-                    <a href="{% url 'taskers:completedtoday' %}"> Completed</a></small> <br>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-4">
-        <div class="card border-success mb-3">
-            <div class="card-header">
-                <i class="fa fa-calendar-alt"></i> Tasks yesterday <small class="float-right">{{ yesterday|date }}</small>
-            </div>
-            <div class="card-body">
-                <small>
-                    {% if priority_tasks_yesterday.count %}
-                    <span class="badge badge-danger badge-pill">{{ priority_tasks_yesterday.count }}</span>
-                    {% else %}
-                    <span class="badge badge-primary badge-pill">{{ priority_tasks_yesterday.count }}</span>
-                    {% endif %}
-                    <a href="{% url 'taskers:taskspriorityyesterday' %}"> Priority</a></small> <br>
-                <small><span class="badge badge-primary badge-pill">{{ wip_tasks_yesterday.count }}</span>
-                    <a href="{% url 'taskers:wiptaskyesterday' %}"> Work in progress</a></small> <br>
-                <small><span class="badge badge-primary badge-pill">{{ completed_tasks_yesterday.count }}</span>
-                    <a href="{% url 'taskers:completedtaskyesterday' %}"> Completed</a></small> <br>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-4">
-        <div class="card border-info mb-3">
-            <div class="card-header">
-                <i class="fa fa-calendar-alt"></i> All tasks
-            </div>
-            <div class="card-body">
-                <small>
-                    {% if priority_tasks.count %}
-                    <span class="badge badge-danger badge-pill">{{ priority_tasks.count }}</span>
-                    {% else %}
-                    <span class="badge badge-primary badge-pill">{{ priority_tasks.count }}</span>
-                    {% endif %}
-                    <a href="{% url 'taskers:allprioritytasks' %}"> Priority</a></small> <br>
-                <small><span class="badge badge-primary badge-pill">{{ wip_tasks.count }}</span>
-                    <a href="{% url 'taskers:allwiptasks' %}"> Work in progress</a></small> <br>
-                <small><span class="badge badge-primary badge-pill">{{ completed_tasks.count }}</span>
-                    <a href="{% url 'taskers:allcompletedtasks' %}"> Completed</a></small> <br>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
                 <h4>
-                    My Tasks
-                    <small>
-                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
-                            <i class="fa-regular fa-square-plus"></i> Add Task
-                        </button>
-                    </small>
+                    Completed tasks
                 </h4>
             </div>
             <div class="card-body">
@@ -204,32 +137,5 @@
         
     </div>
     
-</div>
-
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">New Task</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <!-- <h4>New task</h4> -->
-            <form method="POST">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <!-- <input class="btn btn-primary btn-sm" type="submit" value="Create"> -->
-                <!-- <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">Cancel</a> -->
-            
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-            <input class="btn btn-primary btn-sm" type="submit" value="Create">
-        </div>
-            </form>
-        </div>
-    </div>
 </div>
 {% endblock %}

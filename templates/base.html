@@ -12,7 +12,7 @@
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/jq-3.6.0/jszip-2.5.0/dt-1.11.3/af-2.3.7/b-2.0.1/b-html5-2.0.1/b-print-2.0.1/r-2.2.9/datatables.min.css"/>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" rel="stylesheet" />
         <link rel="stylesheet" href="{% static 'style.css' %}">
-        <title>AdOn Tasker | {{title|title}}</title>
+        <title>ADON Tasker {% if title %} | {{title|title}} {% else %} {{ empty }} {% endif %}</title>
     </head>
     <body>
         {% if request.user.is_anonymous %}
