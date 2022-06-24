@@ -1,22 +1,10 @@
-{% extends 'base.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'taskers:userview' %}">Tasks</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Priority</li>
-    </ol>
-</nav>
-{% if messages %}
-    {% include 'includes/messages.html' %}
-{% endif %}
-<div class="row">
+<!-- <div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h4>
-                    Priority tasks
-                </h4>
+                <strong>
+                    {{ title|title }}
+                </strong>
             </div>
             <div class="card-body">
                 <table class="table table-sm" id="tasks">
@@ -44,7 +32,7 @@
                                 {{ task.task_category|title }} - ({{ task.task_type|title }})
                             </td>
                             <td>
-                                <!-- <strong>Date started</strong> <br> -->
+                                
                                 {{ task.created|date }}
                             </td>
                             <td>
@@ -93,7 +81,7 @@
                                 {{ task.task_category|title }} - ({{ task.task_type|title }})
                             </td>
                             <td>
-                                <!-- <strong>Date started</strong> <br> -->
+                                
                                 {{ task.created|date }}
                             </td>
                             <td>
@@ -134,7 +122,72 @@
                 </table>
             </div>
         </div>
+    </div>
+</div> -->
+<div class="row">
+    <div class="col-sm-12">
+        <div class="mb-4">
+            <strong>{{ title|title }}</strong>
+            <form class="form-inline my-2 my-lg-0 float-right">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ request.GET.q }}">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="card-columns">
+            {% for task in page_obj %}
+            {% if task %}
+            <div class="card">
+                <div class="card-body">
+                    <strong>{{ task.name|title }}</strong><br>
+                    <small>
+                        {{ task.task_category|title }} - ({{ task.task_type|title }})
+                        <br>
+                        {% if task.paradise_link %}
+                        <a href="{{ task.paradise_link }}">{{ task.paradise_link }}</a>
+                        {% else %}
+                        No paradise link
+                        {% endif %}
+                    </small>
+                    <br>
+                    <br>
+                    {% if not task.is_done %}
+                        <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>
+                        <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-trash-can"></i></a>
+                    {% else %}
+                        <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-rectangle-list"></i> Details</a>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Created: {{task.created|date}} | by: 
+                        {% if request.user.is_superuser %}
+                        <a href="{% url 'dashboards:userdetails' task.user.username %}">{{ task.user.username|title }}</a>
+                        {% else %}
+                        {{ task.user.username|title }}
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+            {% else %}
+                {{ empty }}
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="mypagination mb-3">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
         
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+        
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
     </div>
 </div>
-{% endblock %}

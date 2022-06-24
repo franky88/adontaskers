@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'taskers:userview' %}">Tasks</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ title|title }}</li>
+    </ol>
+</nav>
+{% if messages %}
+    {% include 'includes/messages.html' %}
+{% endif %}
+{% include 'includes/tasks_filter.html' %}
+{% endblock %}

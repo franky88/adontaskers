@@ -1,0 +1,48 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card mb-2 text-center">
+            <div class="card-body">
+                <strong>Tasks Categories</strong>
+            </div>
+        </div>
+        <div class="card-columns">
+            {% for user in designer_points %}
+            <div class="card">
+                <div class="card-body">
+                    <!-- <h5 class="card-title">{{ task.user|title }}</h5> -->
+                    <p class="card-text">
+                    <!-- {% for task in user.task_set.all %}
+                        {{ task.task_category }} <br>
+                    {% endfor %} -->
+                        <a href="{% url 'dashboards:userdetails' user.username %}">@{{ user.get_username|upper }}</a>
+                        <br>
+                        <strong id="designer-points">{{ user.total_points }}</strong><small> Pts</small><br>
+                        <small>Completed {{ user.task.is_done.count }} tasks.</small>
+                    </p>
+                    <!-- <p class="card-text"><small class="text-muted">Total tasks {{ tasks.count }}</small></p> -->
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <div class="card border-primary mt-2">
+            <div class="card-body">
+                <strong>Designers</strong>
+                <hr>
+                {% for user in users %}
+                    {{ user.username|title }} <br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card border-primary mt-2">
+            <div class="card-body">
+                <strong>Completed task</strong>
+                <hr>
+                {{ done_tasks_this_month.count }}
+            </div>
+        </div>
+    </div>
+</div>

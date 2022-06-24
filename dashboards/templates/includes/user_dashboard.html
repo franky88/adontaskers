@@ -1,0 +1,90 @@
+{% load crispy_forms_tags %}
+<div class="row">
+    <div class="col-sm-3">
+        <div class="card border-primary mb-2">
+            <div class="card-body">
+                <strong>
+                    {{ request.user.get_username|title }}
+                    {% if request.user.is_active %}
+                    <small class="float-right">Status: Active</small>
+                    {% endif %}
+                </strong>
+                <hr>
+                <div class="list-group mb-3">
+                    <a href="{% url 'taskers:allprioritytasks' %}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+                        Priority
+                        <span class="badge badge-primary badge-pill">
+                            {{ prioritytasks.count }}
+                        </span>
+                    </a>
+                    <a href="{% url 'taskers:allwiptasks' %}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+                        Work in progress
+                        <span class="badge badge-primary badge-pill">
+                            {{ total_tasks.count }}
+                        </span>
+                    </a>
+                    <a href="{% url 'taskers:allcompletedtasks' %}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+                        Completed
+                        <span class="badge badge-primary badge-pill">
+                            {{completed.count}}
+                        </span>
+                    </a>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
+                    <i class="fa-regular fa-square-plus"></i> Add Task
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="card border-success mb-2">
+            <div class="card-header">
+                <strong>Tasks report summary</strong>
+            </div>
+            <div class="card-body">
+                <h6>
+                    Task category
+                    <small>{{ done_tasks_this_month.count }}</small>
+                    <small>{{ month }}</small>
+                    <small>{{ year }}</small>
+                </h6>
+                {% for cat in tasks_cat %}
+                    {{ cat.name }} - {{cat.task_point}} <br>
+                {% endfor %}
+                <br>
+                <h6>Task type</h6>
+                {% for cat in tasks_type %}
+                    {{ cat.name }} - {{cat.task_point}} <br>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">New Task</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <!-- <h4>New task</h4> -->
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <!-- <input class="btn btn-primary btn-sm" type="submit" value="Create"> -->
+                <!-- <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">Cancel</a> -->
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <input class="btn btn-primary btn-sm" type="submit" value="Create">
+        </div>
+            </form>
+        </div>
+    </div>
+</div>

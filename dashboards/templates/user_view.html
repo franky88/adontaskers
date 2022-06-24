@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'dashboards:dashboard' %}">Dashboard</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{title|title}}</li>
+    </ol>
+</nav>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <strong>{{ user.username|title }}</strong>
+            </div>
+            <div class="card-body">
+                {% for task in user.task_set.all %}
+                    {% if not task.is_done %}
+                        {{forloop.counter}}.) {{task}} <br>
+                    {% else %}
+                        {{empty}}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+    
+{% endblock %}

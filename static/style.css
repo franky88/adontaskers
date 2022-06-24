@@ -17,3 +17,7 @@
 .priority {
     color: red;
 }
+.pagination {
+    background-color: white;
+    padding: 10px;
+}

@@ -18,7 +18,7 @@ class BaseTime(models.Model):
 
 
 class TaskCategory(BaseTime, models.Model):
-    name = models.CharField(max_length=120)
+    name = models.CharField(max_length=120, unique=True)
     task_point = models.FloatField(default=0.0)
     # created = models.DateTimeField(auto_now_add=True)
     # updated = models.DateTimeField(auto_now=True)
@@ -43,7 +43,7 @@ class TaskType(BaseTime, models.Model):
 class Task(models.Model):
     slug = models.SlugField(unique=True, null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
+                             on_delete=models.CASCADE, verbose_name='designers')
     task_type = models.ForeignKey(
         TaskType, on_delete=models.CASCADE, default=1)
     task_category = models.ForeignKey(

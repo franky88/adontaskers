@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # local apps
     'tasks.apps.TasksConfig',
-    'tasksummary.apps.TasksummaryConfig',
     'dashboards.apps.DashboardsConfig',
     # 3rd party apps
     'crispy_forms',
