@@ -4,7 +4,7 @@ from tasks.forms import RemarksForm, TaskForm, AdminTaskForm
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum
+from django.db.models import Sum, Max, Min, F, Count
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -20,10 +20,12 @@ class DashboardView(View):
         active_users = User.objects.filter(is_active=True)
         designer_points = active_users.filter(task__is_done=True).annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point'))
         tasks_this_month = Task.objects.filter(is_done=True).filter(updated__year=str(self.today.year), updated__month=str(self.today.month))
+        user_total_points = User.objects.filter(username=request.user).filter(task__is_done=True).aggregate(total_sum=Sum('task__task_category__task_point') + Sum('task__task_type__task_point'))
         on_progress_priority_tasks = Task.objects.filter(user=request.user).filter(is_done=False).filter(is_priority=True)
         on_progress_priority_tasks_total = Task.objects.filter(user=request.user).filter(is_done=False)
         completed = Task.objects.filter(user=request.user).filter(is_done=True)
         task_cats = TaskCategory.objects.all()
+        # print(user_total_points.total)
         if request.user.is_superuser:
             form = AdminTaskForm(request.POST or None)
         else:
@@ -38,7 +40,8 @@ class DashboardView(View):
             'year': self.today.year,
             'task_cats': task_cats,
             'designer_points': designer_points,
-            'form': form
+            'form': form,
+            'user_total_points': user_total_points
             }
         return render(request, self.template_name, context)
 
@@ -84,8 +87,12 @@ class UserView(View):
     def get(self, request, *args, **kwargs):
         user_name = kwargs.get('username')
         user = get_object_or_404(User, username=user_name)
+        task_cat = TaskCategory.objects.filter(task__user__username=user_name).filter(task__is_done=True).annotate(total=Count('task', distinct=True))
+        tasks = Task.objects.filter(user__username=user_name).filter(is_done=True).annotate(total=Count('task_category', distinct=True))
         context = {
             'title': 'designer details',
-            'user': user
+            'user': user,
+            'task_cat': task_cat,
+            'tasks': tasks
         }
         return render(request, self.template_name, context)

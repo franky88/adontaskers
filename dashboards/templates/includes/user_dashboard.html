@@ -13,9 +13,15 @@
                 <div class="list-group mb-3">
                     <a href="{% url 'taskers:allprioritytasks' %}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
                         Priority
+                        {% if prioritytasks %}
+                        <span class="badge badge-danger badge-pill">
+                            {{ prioritytasks.count }}
+                        </span>
+                        {% else %}
                         <span class="badge badge-primary badge-pill">
                             {{ prioritytasks.count }}
                         </span>
+                        {% endif %}
                     </a>
                     <a href="{% url 'taskers:allwiptasks' %}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
                         Work in progress
@@ -36,17 +42,24 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-9">
+    <div class="col-sm-4">
         <div class="card border-success mb-2">
             <div class="card-header">
                 <strong>Tasks report summary</strong>
             </div>
             <div class="card-body">
                 <h6>
-                    Task category
-                    <small>{{ done_tasks_this_month.count }}</small>
+                    Total points for the month
+                    <br>
+                    <div style="background-color: rgb(156, 204, 156); padding: 20px; border-radius: 10px; width: auto; color: white; font-weight: bold;">
+                        <h1>
+                            {{ user_total_points.total_sum }} 
+                        </h1><small>PTS.</small> 
+                    </div>
+                    
+                    <!-- <small>{{ done_tasks_this_month.count }}</small>
                     <small>{{ month }}</small>
-                    <small>{{ year }}</small>
+                    <small>{{ year }}</small> -->
                 </h6>
                 {% for cat in tasks_cat %}
                     {{ cat.name }} - {{cat.task_point}} <br>

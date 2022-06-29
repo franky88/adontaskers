@@ -1,5 +1,50 @@
 {% extends 'base.html' %}
 
+{% block scripts %}
+<script>
+  // jquery function
+  $(document).ready(function(){
+          var ctx = document.getElementById('myCat').getContext('2d');
+          var myChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                  labels: [{%for task_cat in user.task_set.all %}'{{ task_cat.task_category.name }}',{%endfor%}], //loop through queryset, 
+                  datasets: [{
+                      // axis: 'y',
+                      label: ' Total points of the month',
+                      data: [{%for task_cat in user.task_set.all %}'{{ task_cat.task_category.task_point }}',{%endfor%}],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.2)', 
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          indexAxis: 'y',
+                      }
+                  },
+                  
+              }
+  });
+      });
+</script>
+{% endblock %}
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -14,13 +59,39 @@
                 <strong>{{ user.username|title }}</strong>
             </div>
             <div class="card-body">
-                {% for task in user.task_set.all %}
-                    {% if not task.is_done %}
-                        {{forloop.counter}}.) {{task}} <br>
-                    {% else %}
-                        {{empty}}
-                    {% endif %}
+                {% for cat in task_cat %}
+                    {{ cat.task.user.username|title }}
+                    <strong>{{ cat }} -----</strong> {{ cat.total }} <br>
+                    <!-- {% for task in cat.task_set.all %}
+                        {% if task.user.username == user.username %}
+                            {% if task.is_done %}
+                                {{ task.total }} <br>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %} -->
+                    <!-- {% if task.is_done %} -->
+                        <!-- {{forloop.counter}}.) {{ task|upper }} <br> -->
+                        <!-- {{task.task_category}} <br> -->
+                        <!-- {% for c in task.task_category.all %}
+                            {{ c }}
+                        {% endfor %} -->
+                    <!-- {% endif %} -->
+                    <!-- {% for c in task.task_set.all %}
+                        {% if c.is_done %}
+                            {{forloop.counter}}.) {{ c.count }} <br>
+                        {% endif %}
+                    {% endfor %}
+                    {{ task }} <br> -->
                 {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card mt-3">
+            <div class="card-body">
+                <canvas id="myCat" width="400" height="250"></canvas>
             </div>
         </div>
     </div>
