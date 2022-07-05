@@ -3,18 +3,18 @@
 {% block scripts %}
 <script>
   // jquery function
-  $(document).ready(function(){
+$(document).ready(function(){
           var ctx = document.getElementById('myCat').getContext('2d');
           var myChart = new Chart(ctx, {
-              type: 'bar',
+              type: 'line', // doughnut, line
               data: {
-                  labels: [{%for task_cat in user.task_set.all %}'{{ task_cat.task_category.name }}',{%endfor%}], //loop through queryset, 
+                  labels: [{% for cat in task_cat %} '{{ cat }}', {%endfor%}], //loop through queryset, 
                   datasets: [{
                       // axis: 'y',
-                      label: ' Total points of the month',
-                      data: [{%for task_cat in user.task_set.all %}'{{ task_cat.task_category.task_point }}',{%endfor%}],
+                      label: ' Total completed task',
+                      data: [{% for cat in task_cat %}'{{ cat.total }}',{%endfor%}],
                       backgroundColor: [
-                          'rgba(255, 99, 132, 0.2)', 
+                          'rgba(255, 99, 132, 0.05)', 
                           'rgba(54, 162, 235, 0.2)',
                           'rgba(255, 206, 86, 0.2)',
                           'rgba(75, 192, 192, 0.2)',
@@ -29,7 +29,7 @@
                           'rgba(153, 102, 255, 1)',
                           'rgba(255, 159, 64, 1)'
                       ],
-                      borderWidth: 1
+                      borderWidth: 3
                   }]
               },
               options: {
@@ -41,8 +41,48 @@
                   },
                   
               }
-  });
-      });
+        });
+    });
+    $(document).ready(function(){
+          var ctx = document.getElementById('myType').getContext('2d');
+          var myChart = new Chart(ctx, {
+              type: 'line', // doughnut, line
+              data: {
+                  labels: [{% for cat in task_type %} '{{ cat }}', {%endfor%}], //loop through queryset, 
+                  datasets: [{
+                      // axis: 'y',
+                      label: ' Total completed task',
+                      data: [{% for cat in task_type %}'{{ cat.total }}',{%endfor%}],
+                      backgroundColor: [
+                        //   'rgba(255, 99, 132, 0.2)', 
+                          'rgba(54, 162, 235, 0.05)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                        //   'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 3
+                  }]
+              },
+              options: {
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          indexAxis: 'y',
+                      }
+                  },
+                  
+              }
+        });
+    });
 </script>
 {% endblock %}
 {% block content %}
@@ -53,36 +93,27 @@
     </ol>
 </nav>
 <div class="row">
-    <div class="col-sm-12">
-        <div class="card">
-            <div class="card-header">
-                <strong>{{ user.username|title }}</strong>
-            </div>
+    <div class="col-sm-4">
+        <div class="card border-success">
             <div class="card-body">
-                {% for cat in task_cat %}
-                    {{ cat.task.user.username|title }}
-                    <strong>{{ cat }} -----</strong> {{ cat.total }} <br>
-                    <!-- {% for task in cat.task_set.all %}
-                        {% if task.user.username == user.username %}
-                            {% if task.is_done %}
-                                {{ task.total }} <br>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %} -->
-                    <!-- {% if task.is_done %} -->
-                        <!-- {{forloop.counter}}.) {{ task|upper }} <br> -->
-                        <!-- {{task.task_category}} <br> -->
-                        <!-- {% for c in task.task_category.all %}
-                            {{ c }}
-                        {% endfor %} -->
-                    <!-- {% endif %} -->
-                    <!-- {% for c in task.task_set.all %}
-                        {% if c.is_done %}
-                            {{forloop.counter}}.) {{ c.count }} <br>
-                        {% endif %}
-                    {% endfor %}
-                    {{ task }} <br> -->
-                {% endfor %}
+                <strong>Completed</strong>
+                <hr>
+                <small class="text-muted"><strong>{{ total_user_tasks }}</strong> total tasks</small>
+                <h1>{{ completed_tasks.count }} {% if completed_tasks.count > 1 %}tasks{% else %}task{% endif %}</h1>
+                <small class="text-muted">for the month of {{ today|date:'F' }}</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-body">
+                <strong>Total</strong>
+                <hr>
+                <small class="text-muted"><strong>{{ designer_points.total_points }}</strong> points for <b>{{ designer_points|title }}</b></small>
+                <h1>
+                    {{ designer_points_month.total_points }} {% if designer_points_month.total_points > 1 %}points{% else %}point{% endif %}
+                </h1>
+                <small class="text-muted"> are for the month of {{ today|date:'F' }}</small>
             </div>
         </div>
     </div>
@@ -91,7 +122,30 @@
     <div class="col-sm-6">
         <div class="card mt-3">
             <div class="card-body">
-                <canvas id="myCat" width="400" height="250"></canvas>
+                <strong>Completed tasks by categories </strong><small class="float-right">for the month of <strong>{% now 'F' %}</strong></small>
+                <small>
+                    <!-- {% for p in task_cat %} -->
+                        <!-- <br> -->
+                        <!-- {{ p }} - {{p.total}} {{p.updated|date:'F'}} -->
+                        <!-- {% for d in p.task_set.all %}
+                            {% if d.updated|date:'F' == now.date.month %}
+                                sample{{d.updated|date:'F'}}
+                            {% endif %}
+                        {% endfor %} -->
+                    <!-- {% endfor %} -->
+                </small>
+                <hr>
+                <canvas id="myCat" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="card mt-3">
+            <div class="card-body">
+                <strong>Completed tasks by type</strong><small class="float-right">for the month of <strong>{% now 'F' %}</strong></small>
+                
+                <hr>
+                <canvas id="myType" width="400" height="200"></canvas>
             </div>
         </div>
     </div>

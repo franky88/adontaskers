@@ -1,33 +1,60 @@
+{% load crispy_forms_tags %}
+{% if messages %}
+    {% include 'includes/messages.html' %}
+{% endif %}
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-4">
         <div class="card">
             <div class="card-body">
-                <div class="card-columns">
+                <strong>Designers</strong>
+                <hr>
+                <div class="list-group mb-3">
+                    {% for user in designer_points %}
+                        {% if not user.is_superuser %}
+                        <a href="{% url 'dashboards:userdetails' user.username %}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
+                            <div>
+                                @{{ user.get_username|title }} <br>
+                                <small>Total points for the month</small>
+                            </div>
+                            <div>
+                                <h3>{{ user.total_points }}</h3>
+                            </div>
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <!-- <div class="card-columns">
                     {% for user in designer_points %}
                         {% if not user.is_superuser %}
                         <div class="card">
                             <div class="card-body">
-                                <!-- <h5 class="card-title">{{ task.user|title }}</h5> -->
                                 <p class="card-text">
-                                <!-- {% for task in user.task_set.all %}
-                                    {{ task.task_category }} <br>
-                                {% endfor %} -->
                                     <a href="{% url 'dashboards:userdetails' user.username %}">@{{ user.get_username|title }}</a>
                                     <br>
                                     <strong id="designer-points">{{ user.total_points }}</strong><small> Total points of the month.</small><br>
                                     <small>Completed {{ user.task }} tasks.</small>
                                 </p>
-                                <!-- <p class="card-text"><small class="text-muted">Total tasks {{ tasks.count }}</small></p> -->
                             </div>
                         </div>
                         {% endif %}
                     {% endfor %}
-                </div>
+                </div> -->
             </div>
         </div>
-        
+        <div class="card border-success mt-2">
+            <div class="card-body">
+                <strong>Completed</strong>
+                <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
+                    <i class="fa-regular fa-square-plus"></i> Add Task
+                </button>
+                <hr>
+                <small class="text-muted">total of <strong>{{ total_completed.count }}</strong> tasks</small>
+                <h2>{{ done_tasks_this_month.count }} {% if done_tasks_this_month.count > 1 %}tasks{% else %}task{% endif %}</h2>
+                <small>are for the month of {{ today|date:'F' }}</small>
+            </div>
+        </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-8">
         <div class="card mb-3">
           <div class="card-body">
             <strong>Designer's total points of the month</strong>
@@ -37,23 +64,29 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-4">
-        <div class="card border-primary mt-2">
-            <div class="card-body">
-                <strong>Designers</strong>
-                <hr>
-                {% for user in users %}
-                    {{ user.username|title }} <br>
-                {% endfor %}
-            </div>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">New Task</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
         </div>
-        <div class="card border-primary mt-2">
-            <div class="card-body">
-                <strong>Completed task</strong>
-                <hr>
-                {{ done_tasks_this_month.count }}
-            </div>
+        <div class="modal-body">
+            <!-- <h4>New task</h4> -->
+            <form method="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <!-- <input class="btn btn-primary btn-sm" type="submit" value="Create"> -->
+                <!-- <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">Cancel</a> -->
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+            <input class="btn btn-primary btn-sm" type="submit" value="Create">
+        </div>
+            </form>
         </div>
     </div>
 </div>

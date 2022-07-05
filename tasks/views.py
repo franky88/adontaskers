@@ -12,6 +12,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views import View
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from dashboards.filters import TaskFilter
 # Create your views here.
 
 
@@ -417,6 +418,7 @@ class AllCompletedTaskView(View):
             tasks = Task.objects.filter(is_done=True)
         else:
             tasks = Task.objects.filter(user=request.user).filter(is_done=True)
+        # f = TaskFilter(request.GET, queryset=tasks)
         query = request.GET.get('q')
         if query:
             tasks = tasks.filter(
@@ -425,7 +427,7 @@ class AllCompletedTaskView(View):
                 Q(task_category__name__startswith=query) |
                 Q(name__startswith=query) |
                 Q(paradise_link__icontains=query) |
-                Q(check_list_link__icontains=query)
+                Q(check_list_link__icontains=query) 
             ).distinct()
         paginator = Paginator(tasks, 12)
         page_number = request.GET.get('page')

@@ -8,11 +8,11 @@
           var myChart = new Chart(ctx, {
               type: 'bar',
               data: {
-                  labels: [{%for user in designer_points%}'{{ user.get_username }}',{%endfor%}], //loop through queryset, 
+                  labels: [{%for user in designer_points%}{% if not user.is_superuser %}'{{ user.get_username }}',{% endif %}{%endfor%}], //loop through queryset, 
                   datasets: [{
                       // axis: 'y',
                       label: ' Total points of the month',
-                      data: [{%for user in designer_points%}{{ user.total_points }},{%endfor%}],
+                      data: [{%for user in designer_points%}{% if not user.is_superuser %}{{ user.total_points }},{% endif %}{%endfor%}],
                       backgroundColor: [
                           'rgba(255, 99, 132, 0.2)', 
                           'rgba(54, 162, 235, 0.2)',
@@ -29,7 +29,7 @@
                           'rgba(153, 102, 255, 1)',
                           'rgba(255, 159, 64, 1)'
                       ],
-                      borderWidth: 1
+                      borderWidth: 1,
                   }]
               },
               options: {
@@ -54,15 +54,6 @@
     </ol>
 </nav>
 {% if request.user.is_superuser %}
-<!-- <div class="row">
-  <div class="col-sm-6">
-    <div class="card mb-3">
-      <div class="card-body">
-        <canvas id="myChart" width="400" height="400"></canvas>
-      </div>
-    </div>
-  </div>
-</div> -->
 {% include 'includes/users_dashboard.html' %}
 {% else %}
 {% include 'includes/user_dashboard.html' %}

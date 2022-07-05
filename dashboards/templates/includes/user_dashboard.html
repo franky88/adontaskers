@@ -1,4 +1,7 @@
 {% load crispy_forms_tags %}
+{% if messages %}
+    {% include 'includes/messages.html' %}
+{% endif %}
 <div class="row">
     <div class="col-sm-3">
         <div class="card border-primary mb-2">
@@ -51,22 +54,20 @@
                 <h6>
                     Total points for the month
                     <br>
+                    <br>
                     <div style="background-color: rgb(156, 204, 156); padding: 20px; border-radius: 10px; width: auto; color: white; font-weight: bold;">
                         <h1>
-                            {{ user_total_points.total_sum }} 
-                        </h1><small>PTS.</small> 
+                            {{ user_total_points.total_sum }}
+                            <small>PTS.</small>
+                        </h1> 
                     </div>
+                    <small class="text-muted">25% higher compared to previous month</small>
                     
                     <!-- <small>{{ done_tasks_this_month.count }}</small>
                     <small>{{ month }}</small>
                     <small>{{ year }}</small> -->
                 </h6>
                 {% for cat in tasks_cat %}
-                    {{ cat.name }} - {{cat.task_point}} <br>
-                {% endfor %}
-                <br>
-                <h6>Task type</h6>
-                {% for cat in tasks_type %}
                     {{ cat.name }} - {{cat.task_point}} <br>
                 {% endfor %}
             </div>

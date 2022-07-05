@@ -3,7 +3,7 @@
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'taskers:userview' %}">Tasks</a></li>
+      <li class="breadcrumb-item"><a href="{{request.META.HTTP_REFERER}}"><i class="fa-solid fa-angle-left"></i> Back</a></li>
       <li class="breadcrumb-item active" aria-current="page">Task details</li>
     </ol>
 </nav>
@@ -15,8 +15,7 @@
     <div class="col-sm-6">
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">Task Details<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right"><i class="fa-regular fa-trash-can"></i></a></h5>
-                
+                <h5 class="card-title">Task Details {% if instance.is_done %}{% else %}<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right"><i class="fa-regular fa-trash-can"></i></a>{% endif %}</h5>
                 <hr>
                 <h4>{{ instance.name|title }}</h4>
                 <div class="text-details">

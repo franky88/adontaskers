@@ -3,7 +3,7 @@
 {% block content %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="{% url 'taskers:userview' %}">Tasks</a></li>
+      <li class="breadcrumb-item"><a href="{{request.META.HTTP_REFERER}}"><i class="fa-solid fa-angle-left"></i> Back</a></li>
       <li class="breadcrumb-item active" aria-current="page">Task delete</li>
     </ol>
 </nav>
