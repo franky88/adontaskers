@@ -39,9 +39,13 @@
                         </span>
                     </a>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
-                    <i class="fa-regular fa-square-plus"></i> Add Task
-                </button>
+                {% if perms.tasks %}
+                    {% if perms.tasks.add_task %}
+                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
+                            <i class="fa-regular fa-square-plus"></i> Add Task
+                        </button>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>

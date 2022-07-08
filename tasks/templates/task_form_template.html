@@ -79,9 +79,15 @@
                 <strong>
                     My Tasks
                     <small>
-                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
-                            <i class="fa-regular fa-square-plus"></i> Add Task
-                        </button>
+                        {% if perms.tasks %}
+                            {% if perms.tasks.add_task %}
+                                <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
+                                    <i class="fa-regular fa-square-plus"></i> Add Task
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <p>You don't have permission to do anything in the foo app.</p>
+                        {% endif %}
                     </small>
                 </strong>
             </div>

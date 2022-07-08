@@ -6,7 +6,7 @@
 $(document).ready(function(){
           var ctx = document.getElementById('myCat').getContext('2d');
           var myChart = new Chart(ctx, {
-              type: 'line', // doughnut, line
+              type: 'doughnut', // doughnut, line
               data: {
                   labels: [{% for cat in task_cat %} '{{ cat }}', {%endfor%}], //loop through queryset, 
                   datasets: [{
@@ -46,7 +46,7 @@ $(document).ready(function(){
     $(document).ready(function(){
           var ctx = document.getElementById('myType').getContext('2d');
           var myChart = new Chart(ctx, {
-              type: 'line', // doughnut, line
+              type: 'doughnut', // doughnut, line
               data: {
                   labels: [{% for cat in task_type %} '{{ cat }}', {%endfor%}], //loop through queryset, 
                   datasets: [{
@@ -96,7 +96,7 @@ $(document).ready(function(){
     <div class="col-sm-4">
         <div class="card border-success">
             <div class="card-body">
-                <strong>Completed</strong>
+                <strong>Completed</strong><small class="text-muted float-right">{{ perms.tasks }}</small>
                 <hr>
                 <small class="text-muted"><strong>{{ total_user_tasks }}</strong> total tasks</small>
                 <h1>{{ completed_tasks.count }} {% if completed_tasks.count > 1 %}tasks{% else %}task{% endif %}</h1>
@@ -123,17 +123,6 @@ $(document).ready(function(){
         <div class="card mt-3">
             <div class="card-body">
                 <strong>Completed tasks by categories </strong><small class="float-right">for the month of <strong>{% now 'F' %}</strong></small>
-                <small>
-                    <!-- {% for p in task_cat %} -->
-                        <!-- <br> -->
-                        <!-- {{ p }} - {{p.total}} {{p.updated|date:'F'}} -->
-                        <!-- {% for d in p.task_set.all %}
-                            {% if d.updated|date:'F' == now.date.month %}
-                                sample{{d.updated|date:'F'}}
-                            {% endif %}
-                        {% endfor %} -->
-                    <!-- {% endfor %} -->
-                </small>
                 <hr>
                 <canvas id="myCat" width="400" height="200"></canvas>
             </div>

@@ -1,5 +1,6 @@
 from tabnanny import verbose
 from django.db import models
+from django.contrib.auth.models import User
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.conf import settings
@@ -45,14 +46,15 @@ class Task(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE, verbose_name='designers')
     task_type = models.ForeignKey(
-        TaskType, on_delete=models.CASCADE, default=1, related_name='TaskType')
+        TaskType, on_delete=models.CASCADE, default=1)
     task_category = models.ForeignKey(
-        TaskCategory, on_delete=models.CASCADE, default=1, related_name='TaskCategory')
+        TaskCategory, on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=120, verbose_name="Client name")
     paradise_link = models.URLField(
         blank=True, null=True, verbose_name="task link")
     check_list_link = models.URLField(
         max_length=120, verbose_name='check list link', blank=True, null=True)
+    # task_note = models.TextField(blank=True, null=True, help_text='Task note for designers')
     is_priority = models.BooleanField(
         default=False, verbose_name="Is Task Priority?", help_text="Checked if task is priority.")
     is_done = models.BooleanField(default=False, verbose_name="Is Task Completed?",
@@ -61,7 +63,7 @@ class Task(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['is_done', '-updated', '-created']
+        ordering = ['-is_priority', 'is_done', '-updated', '-created']
 
     def get_absolute_url(self):
         return reverse("taskdetail", kwargs={"slug": self.slug})
@@ -83,12 +85,17 @@ class TaskRemark(BaseTime, models.Model):
         return self.task.name
 
 
-@receiver(pre_save, sender=Task)
-def pre_save_task_slug(instance, *args, **kwargs):
-    if not instance.slug:
-        slug = slugify(instance.name)
-        instance.slug = slug
-    if instance.slug:
+@receiver(post_save, sender=Task)
+def pre_save_task_slug(instance, created, *args, **kwargs):
+    if created:
         slug = slugify(instance.name + " " +
                        str(uuid.uuid4()).replace("-", "").upper()[:8])
         instance.slug = slug
+        instance.save()
+        # if not instance.slug:
+        #     slug = slugify(instance.name)
+        #     instance.slug = slug
+    # if instance.slug:
+    #     slug = slugify(instance.name + " " +
+    #                    str(uuid.uuid4()).replace("-", "").upper()[:8])
+    #     instance.slug = slug

@@ -33,7 +33,13 @@
             {% if task %}
             <div class="card">
                 <div class="card-body">
-                    <strong>{{ task.name|title }}</strong><br>
+                    <strong>{{ task.name|title }}</strong>
+                    {% if task.is_priority %}
+                        <small class="float-right" style="color: white; background-color: hsla(0, 95%, 49%, 0.7); padding: 5px; border-radius: 5px;">
+                            PRIORITY
+                        </small>
+                    {% endif %}
+                    <br>
                     <small>
                         {{ task.task_category|title }} - ({{ task.task_type|title }})
                         <br>
@@ -46,10 +52,20 @@
                     <br>
                     <br>
                     {% if not task.is_done %}
-                        <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>
-                        <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-trash-can"></i></a>
+                        {% if perms.tasks %}
+                            {% if perms.tasks.change_task %}
+                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>
+                            {% endif %}
+                            {% if perms.tasks.delete_task %}
+                                <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-trash-can"></i></a>
+                            {% endif %}
+                        {% endif %}
                     {% else %}
-                        <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-rectangle-list"></i> Details</a>
+                        {% if perms.tasks %}
+                            {% if perms.tasks.view_task %}
+                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-rectangle-list"></i> Details</a>
+                            {% endif %}
+                        {% endif %}
                     {% endif %}
                 </div>
                 <div class="card-footer">

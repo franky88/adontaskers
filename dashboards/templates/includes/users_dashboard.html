@@ -44,9 +44,15 @@
         <div class="card border-success mt-2">
             <div class="card-body">
                 <strong>Completed</strong>
-                <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
-                    <i class="fa-regular fa-square-plus"></i> Add Task
-                </button>
+                {% if perms.tasks %}
+                    {% if perms.tasks.add_task %}
+                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
+                            <i class="fa-regular fa-square-plus"></i> Add Task
+                        </button>
+                    {% endif %}
+                {% else %}
+                    <p>You don't have permission to do anything in the foo app.</p>
+                {% endif %}
                 <hr>
                 <small class="text-muted">total of <strong>{{ total_completed.count }}</strong> tasks</small>
                 <h2>{{ done_tasks_this_month.count }} {% if done_tasks_this_month.count > 1 %}tasks{% else %}task{% endif %}</h2>

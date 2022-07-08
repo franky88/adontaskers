@@ -15,7 +15,14 @@
     <div class="col-sm-6">
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">Task Details {% if instance.is_done %}{% else %}<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right"><i class="fa-regular fa-trash-can"></i></a>{% endif %}</h5>
+                <h5 class="card-title">Task Details
+                    <!-- {% if instance.is_done %}
+                    {% else %}
+                        {% if perm.tasks_delete_task %}
+                            <a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right"><i class="fa-regular fa-trash-can"></i></a>
+                        {% endif %}
+                    {% endif %} -->
+                </h5>
                 <hr>
                 <h4>{{ instance.name|title }}</h4>
                 <div class="text-details">
@@ -38,7 +45,7 @@
                     </div>
                     {% else %}
                     <div class="alert alert-info" role="alert">
-                        <strong>Working on progress...</strong>
+                        <strong>Working in progress...</strong>
                     </div>
                     {% endif %}
                 </div>
@@ -84,7 +91,13 @@
     <div class="col-sm-8">
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">Task Details<a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right"><i class="fa-regular fa-trash-can"></i></a></h5>
+                <h5 class="card-title">Task Details
+                    {% if perms.tasks %}
+                        {% if perms.tasks_delete_task %}
+                            <a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right"><i class="fa-regular fa-trash-can"></i></a>
+                        {% endif %}
+                    {% endif %}
+                </h5>
                 <hr>
                 <h4>{{ instance.name|title }}</h4>
                 <div class="text-details">
@@ -107,7 +120,7 @@
                     </div>
                     {% else %}
                     <div class="alert alert-info" role="alert">
-                        <strong>Work on progress...</strong>
+                        <strong>Work in progress...</strong>
                     </div>
                     {% endif %}
                 </div>
@@ -122,15 +135,25 @@
                         {% if not note.remarks %}
                         <p>No notes here...</p>
                         {% else %}
-                            <small><u>Posted by <a href="">{{ note.user|title }}</a> </u><a href="{% url 'taskers:delete_note' note.pk %}" class="float-right delete-note"><i class="fa-regular fa-trash-can"></i></a></small>
+                            <small><u>Posted by <a href="">{{ note.user|title }}</a> </u>
+                                {% if perms.tasks %}
+                                    {% if perms.tasks.delete_taskremark %}
+                                        <a href="{% url 'taskers:delete_note' note.pk %}" class="float-right delete-note"><i class="fa-regular fa-trash-can"></i></a>
+                                    {% endif %}
+                                {% endif %}
+                            </small>
                             <p>{{ note.remarks }}</p>
                             <small>Posted {{note.created|timesince}} ago</small> <br>
                         {% endif %}
                     </div>
                 {% endfor %}
-                <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#addNote">
-                    Add note
-                </button>
+                {% if perms.tasks %}
+                    {% if perms.tasks.add_taskremark %}
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#addNote">
+                            Add note
+                        </button>
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>

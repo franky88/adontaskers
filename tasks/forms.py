@@ -12,8 +12,9 @@ class TaskForm(forms.ModelForm):
             'task_category',
             'paradise_link',
             'check_list_link',
+            # 'task_note',
             'is_priority',
-            'is_done'
+            'is_done',
         ]
 
 
@@ -27,8 +28,9 @@ class AdminTaskForm(forms.ModelForm):
             'task_category',
             'paradise_link',
             'check_list_link',
+            # 'task_note',
             'is_priority',
-            'is_done'
+            'is_done',
         ]
 
 
