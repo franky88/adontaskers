@@ -23,25 +23,9 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-                <!-- <div class="card-columns">
-                    {% for user in designer_points %}
-                        {% if not user.is_superuser %}
-                        <div class="card">
-                            <div class="card-body">
-                                <p class="card-text">
-                                    <a href="{% url 'dashboards:userdetails' user.username %}">@{{ user.get_username|title }}</a>
-                                    <br>
-                                    <strong id="designer-points">{{ user.total_points }}</strong><small> Total points of the month.</small><br>
-                                    <small>Completed {{ user.task }} tasks.</small>
-                                </p>
-                            </div>
-                        </div>
-                        {% endif %}
-                    {% endfor %}
-                </div> -->
             </div>
         </div>
-        <div class="card border-success mt-2">
+        <div class="card border-success mt-3">
             <div class="card-body">
                 <strong>Completed</strong>
                 {% if perms.tasks %}
@@ -68,6 +52,21 @@
             <canvas id="myChart" width="400" height="250"></canvas>
           </div>
         </div>
+        <div class="card mt-3">
+            <div class="card-body">
+                <!-- {% for t in tasks_per_day %}
+                    <strong style="color: red;">{{t.day|date:'F j'}}</strong> ({{t.c}})
+                {% endfor %} -->
+                <strong>Completed tasks per day</strong>
+                <hr>
+                <canvas id="perDayTaskChart" width="1000" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        
     </div>
 </div>
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -84,9 +83,6 @@
             <form method="POST">
                 {% csrf_token %}
                 {{ form|crispy }}
-                <!-- <input class="btn btn-primary btn-sm" type="submit" value="Create"> -->
-                <!-- <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">Cancel</a> -->
-            
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>

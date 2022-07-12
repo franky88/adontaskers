@@ -4,8 +4,8 @@ from tasks.forms import RemarksForm, TaskForm, AdminTaskForm
 from django.views import View
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Sum, Max, Min, F, Count
-from django.db.models.functions import TruncMonth
+from django.db.models import Sum, Max, Min, F, Count, DateTimeField, ExpressionWrapper
+from django.db.models.functions import TruncMonth, TruncDay
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -19,14 +19,27 @@ class DashboardView(View):
     year, month = today.year, today.month
     last_day_of_the_month = calendar.monthrange(year, month)[1]
     monthly_range = str(today.year)+"-"+str(today.month)+"-"+"1", str(today.year)+"-"+str(today.month)+"-"+str(last_day_of_the_month)
-    print(last_day_of_the_month)
-    print(monthly_range)
+    expression = F('updated') - timezone.timedelta(hours=6)
+    wrapped_expression = ExpressionWrapper(expression, output_field=DateTimeField())
+    start_date = datetime.date(today.year, today.month, 1)
+    end_date = datetime.date(today.year, today.month, today.day)
+    # print(last_day_of_the_month)
+    # print(monthly_range)
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
     def get(self, request, *args, **kwargs):
+        tasks_per_day = Task.objects.filter(updated__range=(self.start_date, self.end_date)) \
+            .filter(is_done=True) \
+            .annotate(day=TruncDay(self.wrapped_expression)) \
+            .values('day') \
+            .annotate(c=Count(F('id'))) \
+            .order_by('day')
         active_users = User.objects.filter(is_active=True)
-        designer_points = User.objects.filter(task__is_done=True).annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point')).order_by('-total_points')
+        designer_points = active_users.filter(task__is_done=True) \
+            .filter(task__updated__range=(self.start_date, self.end_date)) \
+            .annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point')) \
+            .order_by('-total_points')
         tasks_this_month = Task.objects.filter(is_done=True).filter(updated__year=self.today.year, updated__month=self.today.month)
         # tasks_this_month = Task.objects.filter(is_done=True).filter(updated__range=[str(self.today.year)+"-"+str(self.today.month)+"-"+"1", str(self.today.year)+"-"+str(self.today.month)+"-"+str(self.last_day_of_the_month)])
         user_total_points = User.objects.filter(username=request.user).filter(task__is_done=True).aggregate(total_sum=Sum('task__task_category__task_point') + Sum('task__task_type__task_point'))
@@ -53,7 +66,9 @@ class DashboardView(View):
             'designer_points': designer_points,
             'form': form,
             'user_total_points': user_total_points,
-            'total_completed': total_completed
+            'total_completed': total_completed,
+            'tasks_per_day': tasks_per_day,
+            # 'designer_points_month': designer_points_month
             }
         return render(request, self.template_name, context)
 
@@ -99,27 +114,53 @@ class UserView(View):
     last_day_of_the_month = calendar.monthrange(year, month)[1]
     start_date = datetime.date(today.year, today.month, 1)
     end_date = datetime.date(today.year, today.month, today.day)
+    expression = F('updated') - timezone.timedelta(hours=6)
+    wrapped_expression = ExpressionWrapper(expression, output_field=DateTimeField())
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
     def get(self, request, *args, **kwargs):
         user_name = kwargs.get('username')
         user = get_object_or_404(User, username=user_name)
-        designer_points = User.objects.filter(username=user.username).filter(task__is_done=True).annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point'))[0]
-        designer_points_month = Task.objects.filter(user__username=user.username).filter(is_done=True).filter(updated__range=(self.start_date, self.end_date)).aggregate(total_points=Sum('task_category__task_point') + Sum('task_type__task_point'))
-        completed_tasks = Task.objects.filter(is_done=True).filter(user__username=user.username).filter(updated__range=(self.start_date, self.end_date))
+        designer_points = User.objects.filter(username=user.username) \
+            .filter(task__is_done=True) \
+            .annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point'))[0]
+        designer_points_month = Task.objects.filter(user__username=user.username) \
+            .filter(is_done=True).filter(updated__range=(self.start_date, self.end_date)) \
+            .aggregate(total_points=Sum('task_category__task_point') + Sum('task_type__task_point'))
+        completed_tasks = Task.objects.filter(is_done=True) \
+            .filter(user__username=user.username) \
+            .filter(updated__range=(self.start_date, self.end_date))
         # task_cat = TaskCategory.objects.filter(TaskCategory__is_done=True).filter(TaskCategory__user__username=user.username).annotate(total=Count('TaskCategory', distinct=True))
         # task_type = TaskType.objects.filter(TaskType__is_done=True).filter(TaskType__user__username=user.username).annotate(total=Count('TaskType', distinct=True))
         # task_cat = TaskCategory.objects.filter(TaskCategory__is_done=True).filter(TaskCategory__updated__year=self.today.year, TaskCategory__updated__month=self.today.month).filter(TaskCategory__user__username=user.username).annotate(total=Count('TaskCategory', distinct=True))
         # task_type = TaskType.objects.filter(TaskType__is_done=True).filter(TaskType__updated__year=self.today.year, TaskType__updated__month=self.today.month).filter(TaskType__user__username=user.username).annotate(total=Count('TaskType', distinct=True))
-        task_cat = TaskCategory.objects.filter(task__is_done=True).filter(task__updated__range=(self.start_date, self.end_date)).filter(task__user__username=user.username).annotate(total=Count('task', distinct=True))
-        task_type = TaskType.objects.filter(task__is_done=True).filter(task__updated__range=(self.start_date, self.end_date)).filter(task__user__username=user.username).annotate(total=Count('task', distinct=True))
+        task_cat = TaskCategory.objects.filter(task__is_done=True) \
+            .filter(task__updated__range=(self.start_date, self.end_date)) \
+            .filter(task__user=user) \
+            .annotate(total=Count('task', distinct=True))
+        task_type = TaskType.objects.filter(task__is_done=True) \
+            .filter(task__updated__range=(self.start_date, self.end_date)) \
+            .filter(task__user=user).annotate(total=Count('task', distinct=True))
         # task_cat = User.objects.filter(username=user.username).filter(task__is_done=True).filter(task__updated__year=self.today.year, task__updated__month=self.today.month).annotate(total=Count('task__task_category'))
-        tasks = Task.objects.filter(user__username=user_name).filter(is_done=True).annotate(total=Count('task_category', distinct=True))
-        total_user_tasks = Task.objects.filter(user__username=user_name).filter(is_done=True).count()
+        tasks = Task.objects.filter(user__username=user_name) \
+            .filter(is_done=True) \
+            .annotate(total=Count('task_category', distinct=True))
+        total_user_tasks = Task.objects.filter(user__username=user_name) \
+            .filter(is_done=True).count()
         # print('today month',self.start_date, self.end_date)
         # print('user', Task.objects.filter(is_done=True).filter(user__username=user.username).filter(updated__range=(self.start_date, self.end_date)).annotate(total=Count('task_category', distinct=True)))
-        tc = Task.objects.filter(updated__range=(self.start_date, self.end_date)).filter(is_done=True).filter(user__username=user.username).annotate(total=Count('pk', distinct=True))
+        tc = Task.objects.filter(updated__range=(self.start_date, self.end_date)) \
+            .filter(is_done=True) \
+            .filter(user__username=user.username) \
+            .annotate(total=Count('pk', distinct=True))
+        tasks_per_day = Task.objects.filter(updated__range=(self.start_date, self.end_date)) \
+            .filter(is_done=True) \
+            .filter(user=user) \
+            .annotate(day=TruncDay(self.wrapped_expression)) \
+            .values('day') \
+            .annotate(c=Count(F('id'))) \
+            .order_by('day')
         context = {
             'title': 'designer details',
             'user': user,
@@ -131,6 +172,7 @@ class UserView(View):
             'designer_points': designer_points,
             'designer_points_month': designer_points_month,
             'total_user_tasks': total_user_tasks,
-            'tc': tc
+            'tc': tc,
+            'tasks_per_day': tasks_per_day
         }
         return render(request, self.template_name, context)

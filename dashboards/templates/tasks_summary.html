@@ -3,46 +3,87 @@
 {% block scripts %}
 <script>
   // jquery function
-  $(document).ready(function(){
-          var ctx = document.getElementById('myChart').getContext('2d');
-          var myChart = new Chart(ctx, {
-              type: 'bar',
-              data: {
-                  labels: [{%for user in designer_points%}{% if not user.is_superuser %}'{{ user.get_username }}',{% endif %}{%endfor%}], //loop through queryset, 
-                  datasets: [{
-                      // axis: 'y',
-                      label: ' Total points of the month',
-                      data: [{%for user in designer_points%}{% if not user.is_superuser %}{{ user.total_points }},{% endif %}{%endfor%}],
-                      backgroundColor: [
-                          'rgba(255, 99, 132, 0.2)', 
-                          'rgba(54, 162, 235, 0.2)',
-                          'rgba(255, 206, 86, 0.2)',
-                          'rgba(75, 192, 192, 0.2)',
-                          'rgba(153, 102, 255, 0.2)',
-                          'rgba(255, 159, 64, 0.2)'
-                      ],
-                      borderColor: [
-                          'rgba(255, 99, 132, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(75, 192, 192, 1)',
-                          'rgba(153, 102, 255, 1)',
-                          'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 1,
-                  }]
-              },
-              options: {
-                  scales: {
-                      y: {
-                          beginAtZero: true,
-                          indexAxis: 'y',
-                      }
-                  },
-                  
-              }
-  });
-      });
+    $(document).ready(function(){
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [{%for user in designer_points%}'{{ user.get_username }}',{%endfor%}], //loop through queryset, 
+                    datasets: [{
+                        // axis: 'y',
+                        label: ' Total points of the month',
+                        data: [{%for user in designer_points%}'{{ user.total_points }}',{%endfor%}],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)', 
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            indexAxis: 'y',
+                        }
+                    },
+                    
+                }
+    });
+        });
+
+    $(document).ready(function(){
+        var ctx = document.getElementById('perDayTaskChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [{%for task in tasks_per_day%}'{{ task.day|date:'F j' }}',{%endfor%}], //loop through queryset, 
+                datasets: [{
+                    // axis: 'y',
+                    label: ' Completed tasks per day',
+                    data: [{%for task in tasks_per_day%}'{{ task.c }}',{%endfor%}],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.05)', 
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 3,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        indexAxis: 'y',
+                    }
+                },
+                
+            }
+    });
+        });
 </script>
 {% endblock %}
 
@@ -53,10 +94,12 @@
       <!-- <li class="breadcrumb-item active" aria-current="page">Completed</li> -->
     </ol>
 </nav>
-{% if request.user.is_superuser %}
-{% include 'includes/users_dashboard.html' %}
+{% if perms.auth %}
+    {% if perms.auth.view_user %}
+        {% include 'includes/users_dashboard.html' %}
+    {% endif %}
 {% else %}
-{% include 'includes/user_dashboard.html' %}
+    {% include 'includes/user_dashboard.html' %}
 {% endif %}
     
 {% endblock %}

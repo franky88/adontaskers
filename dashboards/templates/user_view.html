@@ -3,86 +3,127 @@
 {% block scripts %}
 <script>
   // jquery function
-$(document).ready(function(){
-          var ctx = document.getElementById('myCat').getContext('2d');
-          var myChart = new Chart(ctx, {
-              type: 'doughnut', // doughnut, line
-              data: {
-                  labels: [{% for cat in task_cat %} '{{ cat }}', {%endfor%}], //loop through queryset, 
-                  datasets: [{
-                      // axis: 'y',
-                      label: ' Total completed task',
-                      data: [{% for cat in task_cat %}'{{ cat.total }}',{%endfor%}],
-                      backgroundColor: [
-                          'rgba(255, 99, 132, 0.05)', 
-                          'rgba(54, 162, 235, 0.2)',
-                          'rgba(255, 206, 86, 0.2)',
-                          'rgba(75, 192, 192, 0.2)',
-                          'rgba(153, 102, 255, 0.2)',
-                          'rgba(255, 159, 64, 0.2)'
-                      ],
-                      borderColor: [
-                          'rgba(255, 99, 132, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(75, 192, 192, 1)',
-                          'rgba(153, 102, 255, 1)',
-                          'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 3
-                  }]
-              },
-              options: {
-                  scales: {
-                      y: {
-                          beginAtZero: true,
-                          indexAxis: 'y',
-                      }
-                  },
+// $(document).ready(function(){
+//           var ctx = document.getElementById('myCat').getContext('2d');
+//           var myChart = new Chart(ctx, {
+//               type: 'line', // doughnut, line
+//               data: {
+//                   labels: [{% for cat in task_cat %} '{{ cat }}', {%endfor%}], //loop through queryset, 
+//                   datasets: [{
+//                       // axis: 'y',
+//                       label: ' Total completed task',
+//                       data: [{% for cat in task_cat %}'{{ cat.total }}',{%endfor%}],
+//                       backgroundColor: [
+//                           'rgba(255, 99, 132, 0.05)', 
+//                           'rgba(54, 162, 235, 0.2)',
+//                           'rgba(255, 206, 86, 0.2)',
+//                           'rgba(75, 192, 192, 0.2)',
+//                           'rgba(153, 102, 255, 0.2)',
+//                           'rgba(255, 159, 64, 0.2)'
+//                       ],
+//                       borderColor: [
+//                           'rgba(255, 99, 132, 1)',
+//                           'rgba(54, 162, 235, 1)',
+//                           'rgba(255, 206, 86, 1)',
+//                           'rgba(75, 192, 192, 1)',
+//                           'rgba(153, 102, 255, 1)',
+//                           'rgba(255, 159, 64, 1)'
+//                       ],
+//                       borderWidth: 3
+//                   }]
+//               },
+//               options: {
+//                   scales: {
+//                       y: {
+//                           beginAtZero: true,
+//                           indexAxis: 'y',
+//                       }
+//                   },
                   
-              }
-        });
-    });
+//               }
+//         });
+//     });
+//     $(document).ready(function(){
+//           var ctx = document.getElementById('myType').getContext('2d');
+//           var myChart = new Chart(ctx, {
+//               type: 'line', // doughnut, line
+//               data: {
+//                   labels: [{% for cat in task_type %} '{{ cat }}', {%endfor%}], //loop through queryset, 
+//                   datasets: [{
+//                       // axis: 'y',
+//                       label: ' Total completed task',
+//                       data: [{% for cat in task_type %}'{{ cat.total }}',{%endfor%}],
+//                       backgroundColor: [
+//                         //   'rgba(255, 99, 132, 0.2)', 
+//                           'rgba(54, 162, 235, 0.05)',
+//                           'rgba(255, 206, 86, 0.2)',
+//                           'rgba(75, 192, 192, 0.2)',
+//                           'rgba(153, 102, 255, 0.2)',
+//                           'rgba(255, 159, 64, 0.2)'
+//                       ],
+//                       borderColor: [
+//                         //   'rgba(255, 99, 132, 1)',
+//                           'rgba(54, 162, 235, 1)',
+//                           'rgba(255, 206, 86, 1)',
+//                           'rgba(75, 192, 192, 1)',
+//                           'rgba(153, 102, 255, 1)',
+//                           'rgba(255, 159, 64, 1)'
+//                       ],
+//                       borderWidth: 3
+//                   }]
+//               },
+//               options: {
+//                   scales: {
+//                       y: {
+//                           beginAtZero: true,
+//                           indexAxis: 'y',
+//                       }
+//                   },
+                  
+//               }
+//         });
+//     });
+
     $(document).ready(function(){
-          var ctx = document.getElementById('myType').getContext('2d');
-          var myChart = new Chart(ctx, {
-              type: 'doughnut', // doughnut, line
-              data: {
-                  labels: [{% for cat in task_type %} '{{ cat }}', {%endfor%}], //loop through queryset, 
-                  datasets: [{
-                      // axis: 'y',
-                      label: ' Total completed task',
-                      data: [{% for cat in task_type %}'{{ cat.total }}',{%endfor%}],
-                      backgroundColor: [
-                        //   'rgba(255, 99, 132, 0.2)', 
-                          'rgba(54, 162, 235, 0.05)',
-                          'rgba(255, 206, 86, 0.2)',
-                          'rgba(75, 192, 192, 0.2)',
-                          'rgba(153, 102, 255, 0.2)',
-                          'rgba(255, 159, 64, 0.2)'
-                      ],
-                      borderColor: [
-                        //   'rgba(255, 99, 132, 1)',
-                          'rgba(54, 162, 235, 1)',
-                          'rgba(255, 206, 86, 1)',
-                          'rgba(75, 192, 192, 1)',
-                          'rgba(153, 102, 255, 1)',
-                          'rgba(255, 159, 64, 1)'
-                      ],
-                      borderWidth: 3
-                  }]
-              },
-              options: {
-                  scales: {
-                      y: {
-                          beginAtZero: true,
-                          indexAxis: 'y',
-                      }
-                  },
-                  
-              }
-        });
+        var ctx = document.getElementById('userTaskPerDayChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [{%for task in tasks_per_day%}'{{ task.day|date:'F j' }}',{%endfor%}], //loop through queryset, 
+                datasets: [{
+                    // axis: 'y',
+                    label: ' Completed tasks per day',
+                    data: [{%for task in tasks_per_day%}'{{ task.c }}',{%endfor%}],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.05)', 
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 3,
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        indexAxis: 'y',
+                    }
+                },
+                
+            }
     });
+        });
 </script>
 {% endblock %}
 {% block content %}
@@ -94,13 +135,13 @@ $(document).ready(function(){
 </nav>
 <div class="row">
     <div class="col-sm-4">
-        <div class="card border-success">
+        <div class="card bg-success text-white">
             <div class="card-body">
-                <strong>Completed</strong><small class="text-muted float-right">{{ perms.tasks }}</small>
+                <strong>Completed</strong>
                 <hr>
-                <small class="text-muted"><strong>{{ total_user_tasks }}</strong> total tasks</small>
+                <small><strong>{{ total_user_tasks }}</strong> total tasks</small>
                 <h1>{{ completed_tasks.count }} {% if completed_tasks.count > 1 %}tasks{% else %}task{% endif %}</h1>
-                <small class="text-muted">for the month of {{ today|date:'F' }}</small>
+                <small>for the month of {{ today|date:'F' }}</small>
             </div>
         </div>
     </div>
@@ -119,6 +160,18 @@ $(document).ready(function(){
     </div>
 </div>
 <div class="row">
+    <div class="col-sm-12">
+        <div class="card mt-3">
+            <div class="card-body">
+                <strong>Completed tasks per day </strong><small class="float-right">for the month of <strong>{% now 'F' %}</strong></small>
+                <hr>
+                <canvas id="userTaskPerDayChart" width="1000" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="row">
+    
     <div class="col-sm-6">
         <div class="card mt-3">
             <div class="card-body">
@@ -132,12 +185,11 @@ $(document).ready(function(){
         <div class="card mt-3">
             <div class="card-body">
                 <strong>Completed tasks by type</strong><small class="float-right">for the month of <strong>{% now 'F' %}</strong></small>
-                
                 <hr>
                 <canvas id="myType" width="400" height="200"></canvas>
             </div>
         </div>
     </div>
-</div>
+</div> -->
     
 {% endblock %}
