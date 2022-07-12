@@ -12,9 +12,9 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-import environ
-env = environ.Env()
-environ.Env.read_env()
+# import environ
+# env = environ.Env()
+# environ.Env.read_env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,10 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY", default="unsafe-secret-key")
+SECRET_KEY = os.environ.get("SECRET_KEY", default="unsafe-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG")
 
 ALLOWED_HOSTS = ["*"]
 LOGIN_REDIRECT_URL = '/'
@@ -44,8 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # local apps
-    'tasks.apps.TasksConfig',
-    'dashboards.apps.DashboardsConfig',
+    'tasks',
+    'dashboards',
     # 3rd party apps
     'crispy_forms',
     'django_filters',
@@ -95,9 +95,9 @@ WSGI_APPLICATION = 'adontasker.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
+        'NAME': os.environ.get("DB_NAME"),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
