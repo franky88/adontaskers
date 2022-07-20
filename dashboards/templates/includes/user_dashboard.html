@@ -1,3 +1,48 @@
+{% block scripts %}
+<script>
+    $(document).ready(function(){
+          var ctx = document.getElementById('myPerDayTaskChart').getContext('2d');
+          var myChart = new Chart(ctx, {
+              type: 'line', // doughnut, line
+              data: {
+                  labels: [{% for task in user_tasks_per_day %} '{{ task.day|date:'F j' }}', {%endfor%}], //loop through queryset, 
+                  datasets: [{
+                      // axis: 'y',
+                      label: ' Total completed task',
+                      data: [{% for task in user_tasks_per_day %}'{{ task.c }}',{%endfor%}],
+                      backgroundColor: [
+                          'rgba(255, 99, 132, 0.05)', 
+                          'rgba(54, 162, 235, 0.2)',
+                          'rgba(255, 206, 86, 0.2)',
+                          'rgba(75, 192, 192, 0.2)',
+                          'rgba(153, 102, 255, 0.2)',
+                          'rgba(255, 159, 64, 0.2)'
+                      ],
+                      borderColor: [
+                          'rgba(255, 99, 132, 1)',
+                          'rgba(54, 162, 235, 1)',
+                          'rgba(255, 206, 86, 1)',
+                          'rgba(75, 192, 192, 1)',
+                          'rgba(153, 102, 255, 1)',
+                          'rgba(255, 159, 64, 1)'
+                      ],
+                      borderWidth: 3
+                  }]
+              },
+              options: {
+                  scales: {
+                      y: {
+                          beginAtZero: true,
+                          indexAxis: 'y',
+                      }
+                  },
+                  
+              }
+        });
+    });
+</script>
+{% endblock %}
+
 {% load crispy_forms_tags %}
 {% if messages %}
     {% include 'includes/messages.html' %}
@@ -49,7 +94,18 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-9">
+        <div class="card border-primary mb-2">
+            <div class="card-body">
+                <strong>Completed tasks per day</strong>
+                <hr>
+                <canvas id="myPerDayTaskChart" width="1000" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
         <div class="card border-success mb-2">
             <div class="card-header">
                 <strong>Tasks report summary</strong>
@@ -79,6 +135,7 @@
         
     </div>
 </div>
+
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

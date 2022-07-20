@@ -92,7 +92,7 @@
                 labels: [{%for task in tasks_per_day%}'{{ task.day|date:'F j' }}',{%endfor%}], //loop through queryset, 
                 datasets: [{
                     // axis: 'y',
-                    label: ' Completed tasks per day',
+                    label: ' Completed tasks',
                     data: [{%for task in tasks_per_day%}'{{ task.c }}',{%endfor%}],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.05)', 
@@ -135,7 +135,7 @@
 </nav>
 <div class="row">
     <div class="col-sm-4">
-        <div class="card bg-success text-white">
+        <div class="card mb-3 bg-success text-white">
             <div class="card-body">
                 <strong>Completed</strong>
                 <hr>
@@ -146,7 +146,7 @@
         </div>
     </div>
     <div class="col-sm-8">
-        <div class="card">
+        <div class="card mb-3">
             <div class="card-body">
                 <strong>Total</strong>
                 <hr>
@@ -154,14 +154,14 @@
                 <h1>
                     {{ designer_points_month.total_points }} {% if designer_points_month.total_points > 1 %}points{% else %}point{% endif %}
                 </h1>
-                <small class="text-muted"> are for the month of {{ today|date:'F' }}</small>
+                <small class="text-muted"> for the month of {{ today|date:'F' }}</small>
             </div>
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col-sm-12">
-        <div class="card mt-3">
+        <div class="card">
             <div class="card-body">
                 <strong>Completed tasks per day </strong><small class="float-right">for the month of <strong>{% now 'F' %}</strong></small>
                 <hr>

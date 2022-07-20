@@ -51,6 +51,13 @@ class TaskListView(View):
             completed_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=True)
             completed_tasks = Task.objects.filter(user=request.user).filter(is_done=True)
             form = self.form_class()
+        if request.user.has_perm('auth.view_user'):
+            completed_tasks = Task.objects.filter(is_done=True)
+            wip_tasks = Task.objects.filter(is_done=False)
+            priority_tasks = Task.objects.filter(is_done=False).filter(is_priority=True)
+        # for p in request.user.has_perms:
+        #     print(p)
+        print(request.user.has_perm('auth.view_user'))
         context = {
                     'form': form,
                     'tasks': tasks,
@@ -362,7 +369,7 @@ class AllPriorityTaskView(View):
     template_name = 'tasks_filter_template.html'
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.has_perm('auth.view_user'):
             tasks = Task.objects.filter(is_priority=True).filter(is_done=False)
         else:
             tasks = Task.objects.filter(user=request.user).filter(is_priority=True).filter(is_done=False)
@@ -388,7 +395,7 @@ class AllWIPTaskView(View):
     template_name = 'tasks_filter_template.html'
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.has_perm('auth.view_user'):
             tasks = Task.objects.filter(is_done=False)
         else:
             tasks = Task.objects.filter(user=request.user).filter(is_done=False)
@@ -414,7 +421,7 @@ class AllCompletedTaskView(View):
     template_name = 'tasks_filter_template.html'
 
     def get(self, request, *args, **kwargs):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.has_perm('auth.view_user'):
             tasks = Task.objects.filter(is_done=True)
         else:
             tasks = Task.objects.filter(user=request.user).filter(is_done=True)

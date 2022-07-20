@@ -37,17 +37,34 @@ class DashboardView(View):
             .order_by('day')
         active_users = User.objects.filter(is_active=True)
         designer_points = active_users.filter(task__is_done=True) \
-            .filter(task__updated__range=(self.start_date, self.end_date)) \
-            .annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point')) \
+            .annotate(total_points=Sum(F('task__task_category__task_point')) + Sum(F('task__task_type__task_point'))) \
             .order_by('-total_points')
-        tasks_this_month = Task.objects.filter(is_done=True).filter(updated__year=self.today.year, updated__month=self.today.month)
+            # .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
+            
+            # .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
+            
+        print('year today',str(self.today.year))
+        tasks_this_month = Task.objects.filter(is_done=True) \
+            .filter(updated__year=self.today.year, updated__month=self.today.month)
         # tasks_this_month = Task.objects.filter(is_done=True).filter(updated__range=[str(self.today.year)+"-"+str(self.today.month)+"-"+"1", str(self.today.year)+"-"+str(self.today.month)+"-"+str(self.last_day_of_the_month)])
-        user_total_points = User.objects.filter(username=request.user).filter(task__is_done=True).aggregate(total_sum=Sum('task__task_category__task_point') + Sum('task__task_type__task_point'))
-        on_progress_priority_tasks = Task.objects.filter(user=request.user).filter(is_done=False).filter(is_priority=True)
-        on_progress_priority_tasks_total = Task.objects.filter(user=request.user).filter(is_done=False)
-        completed = Task.objects.filter(user=request.user).filter(is_done=True)
+        user_total_points = User.objects.filter(username=request.user) \
+            .filter(task__is_done=True) \
+            .aggregate(total_sum=Sum('task__task_category__task_point') + Sum('task__task_type__task_point'))
+        on_progress_priority_tasks = Task.objects.filter(user=request.user) \
+            .filter(is_done=False).filter(is_priority=True)
+        on_progress_priority_tasks_total = Task.objects.filter(user=request.user) \
+            .filter(is_done=False)
+        completed = Task.objects.filter(user=request.user) \
+            .filter(is_done=True)
         total_completed = Task.objects.filter(is_done=True)
         task_cats = TaskCategory.objects.all()
+        user_tasks_per_day = Task.objects.filter(updated__range=(self.start_date, self.end_date)) \
+            .filter(is_done=True) \
+            .filter(user=request.user) \
+            .annotate(day=TruncDay(self.wrapped_expression)) \
+            .values('day') \
+            .annotate(c=Count(F('id'))) \
+            .order_by('day')
         # print(user_total_points.total)
         if request.user.is_superuser:
             form = AdminTaskForm(request.POST or None)
@@ -68,7 +85,7 @@ class DashboardView(View):
             'user_total_points': user_total_points,
             'total_completed': total_completed,
             'tasks_per_day': tasks_per_day,
-            # 'designer_points_month': designer_points_month
+            'user_tasks_per_day': user_tasks_per_day
             }
         return render(request, self.template_name, context)
 
@@ -126,7 +143,7 @@ class UserView(View):
             .filter(task__is_done=True) \
             .annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point'))[0]
         designer_points_month = Task.objects.filter(user__username=user.username) \
-            .filter(is_done=True).filter(updated__range=(self.start_date, self.end_date)) \
+            .filter(is_done=True).filter(updated__year=self.today.year, updated__month=self.today.month) \
             .aggregate(total_points=Sum('task_category__task_point') + Sum('task_type__task_point'))
         completed_tasks = Task.objects.filter(is_done=True) \
             .filter(user__username=user.username) \
