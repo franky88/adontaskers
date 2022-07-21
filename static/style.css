@@ -17,7 +17,13 @@
 .priority {
     color: red;
 }
-.pagination {
+.mypagination {
+    display: flex;
+    justify-content: space-evenly;
     background-color: white;
     padding: 10px;
+    box-shadow: 0 0 10px rgba(34, 34, 34, 0.20);
+}
+#designer-points {
+    font-size: 35pt;
 }
