@@ -27,3 +27,33 @@
 #designer-points {
     font-size: 35pt;
 }
+.designers-card {
+    background-color: rgba(228, 240, 247, 0.25);
+    padding: 10px;
+    margin-top: 10px;
+    border-bottom: 1px solid #222;
+    display: flex;
+    justify-content: space-around;
+    align-items: center; gap: 10px;
+}
+.item:nth-of-type(1) {
+    width: 10%;
+    align: center;
+}
+.item:nth-of-type(2) {
+    width: 30%;
+}
+.item:nth-of-type(3) {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.card-container {
+    background-color: #fff;
+    box-shadow: 0 0 40px rgba(34, 34, 34, .1);
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+}

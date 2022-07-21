@@ -4,8 +4,7 @@
 {% endif %}
 <div class="row">
     <div class="col-sm-4">
-        <strong>Designers</strong>
-        <hr>
+        <!-- <hr> -->
         <div class="list-group mb-3">
             <!-- {% for user in designer_points %}
                 <a href="{% url 'dashboards:userdetails' user.username %}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
@@ -18,31 +17,40 @@
                     </div>
                 </a>
             {% endfor %} -->
-            {% for user in designer_points %}
-                <div style="background-color: white; box-shadow: 0 0 40px rgba(34, 34, 34, .1); padding: 10px; margin-top: 10px; border-radius: 5px; display: flex; justify-content: space-around; align-items: center; gap: 10px;">
-                    <span>
-                        <h1>{{ user.total_points }}</h1>
-                    </span>
-                    <div style="display: flex; flex-direction:row; justify-content: space-evenly; align-items: center; gap: 10px;">
-                        <div>
-                            <span>
-                                <i class="fa fa-user-circle"></i>
-                            </span>
-                            {{ user.get_username|title }} <br>
-                            <small>Total points</small>
+            <div class="card-container">
+                <strong>Designers</strong>
+                <hr>
+                {% for user in designer_points %}
+                    <div class="designers-card">
+                        <div class="item">
+                            <i class="fa fa-user-circle"></i>
                         </div>
-                        <a href="{% url 'dashboards:userdetails' user.username %}" class="btn btn-outline-primary btn-sm float-right">Details <i class="fa fa-arrow-right"></i></a>
+                        <div class="item">
+                            <div>
+                                <span>
+                                    <i class="fa fa-user-circle"></i>
+                                </span>
+                                {{ user.get_username|title }} <br>
+                                <small>2 tasks completed today</small>
+                            </div>
+                        </div>
+                        <div class="item">
+                            <strong>{{ user.total_points }} points</strong>
+                            <small class="float-right">
+                                <a href="{% url 'dashboards:userdetails' user.username %}" >Details</a>
+                            </small>
+                        </div>
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
-        <div class="card mb-3">
+        <!-- <div class="card mb-3">
             <div class="card-body">
                 
             </div>
-        </div>
-        <div class="card border-success mb-3">
-            <div class="card-body">
+        </div> -->
+        <div class="card-container mb-3">
+<!--            <div class="card-body">-->
                 <strong>Completed</strong>
                 {% if perms.tasks %}
                     {% if perms.tasks.add_task %}
@@ -57,32 +65,23 @@
                 <small class="text-muted">total of <strong>{{ total_completed.count }}</strong> tasks</small>
                 <h2>{{ done_tasks_this_month.count }} {% if done_tasks_this_month.count > 1 %}tasks{% else %}task{% endif %}</h2>
                 <small>are for the month of {{ today|date:'F' }}</small>
-            </div>
+<!--            </div>-->
         </div>
     </div>
     <div class="col-sm-8">
-        <div class="card bg-info text-white">
-          <div class="card-body">
+        <div class="card-container">
             <strong>Designer's total points of the month</strong>
             <hr>
             <canvas id="myChart" height="80"></canvas>
-          </div>
         </div>
-        <div class="card bg-success text-white mt-3">
-            <div class="card-body">
-                <!-- {% for t in tasks_per_day %}
-                    <strong style="color: red;">{{t.day|date:'F j'}}</strong> ({{t.c}})
-                {% endfor %} -->
-                <strong>Completed tasks per day</strong>
-                <hr>
-                <canvas id="perDayTaskChart" height="80"></canvas>
-            </div>
+        <div class="card-container mt-3">
+            <!-- {% for t in tasks_per_day %}
+                <strong style="color: red;">{{t.day|date:'F j'}}</strong> ({{t.c}})
+            {% endfor %} -->
+            <strong>Completed tasks per day</strong>
+            <hr>
+            <canvas id="perDayTaskChart" height="80"></canvas>
         </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-12">
-        
     </div>
 </div>
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
