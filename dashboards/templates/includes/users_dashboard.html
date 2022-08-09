@@ -1,4 +1,5 @@
 {% load crispy_forms_tags %}
+{% load static %}
 {% if messages %}
     {% include 'includes/messages.html' %}
 {% endif %}
@@ -42,7 +43,7 @@
                 <strong>Designers</strong>
                 <hr>
                 {% for user in designer_points %}
-                    <div class="designers-card">
+                    <!-- <div class="designers-card">
                         <div class="item">
                             <i class="fa fa-user-circle"></i>
                         </div>
@@ -60,6 +61,12 @@
                             <small class="float-right">
                                 <a href="{% url 'dashboards:userdetails' user.username %}" >Details</a>
                             </small>
+                        </div>
+                    </div> -->
+                    <div class="media mb-2">
+                        <img style="width: 64px; height: auto; border-radius: 32px;" class="mr-3" src="{% static '/img/ivana-square.jpg' %}" alt="Generic placeholder image">
+                        <div class="media-body">
+                            <strong class="mt-0">{{ user.get_username|title }}</strong>
                         </div>
                     </div>
                 {% endfor %}

@@ -31,8 +31,8 @@
         <div class="card-columns">
             {% for task in page_obj %}
             {% if task %}
-            <div class="card">
-                <div class="card-body">
+            <div class="card card-container">
+                <div>
                     <strong>{{ task.name|title }}</strong>
                     {% if task.is_priority %}
                         <small class="float-right" style="color: white; background-color: hsla(0, 95%, 49%, 0.7); padding: 5px; border-radius: 5px;">
@@ -68,7 +68,7 @@
                         {% endif %}
                     {% endif %}
                 </div>
-                <div class="card-footer">
+                <div>
                     <small class="text-muted">Created: {{task.created|date}} | by: 
                         {% if request.user.is_superuser %}
                         <a href="{% url 'dashboards:userdetails' task.user.username %}">{{ task.user.username|title }}</a>

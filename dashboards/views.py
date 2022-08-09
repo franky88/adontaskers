@@ -36,13 +36,16 @@ class DashboardView(View):
             .annotate(c=Count(F('id'))) \
             .order_by('day')
         active_users = User.objects.filter(is_active=True)
-        designer_points = active_users.filter(task__is_done=True) \
-            .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
+
+        designer_points = User.objects.filter(is_active=True).filter(task__is_done=True) \
+            .filter(task__updated__year=self.today.year, task__updated__month=self.today.month) \
             .annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point')) \
             .order_by('-total_points')
             # .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
-            
-        print('year today',str(self.today.year))
+        # for d in designer_points:
+        #     print(d.username)
+        #     print(d.tasks)
+        print('points',designer_points)
         tasks_this_month = Task.objects.filter(is_done=True) \
             .filter(updated__year=self.today.year, updated__month=self.today.month)
         # tasks_this_month = Task.objects.filter(is_done=True).filter(updated__range=[str(self.today.year)+"-"+str(self.today.month)+"-"+"1", str(self.today.year)+"-"+str(self.today.month)+"-"+str(self.last_day_of_the_month)])
