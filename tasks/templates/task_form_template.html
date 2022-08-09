@@ -12,11 +12,12 @@
 {% endif %}
 <div class="row mb-3">
     <div class="col-sm-4">
-        <div class="card border-primary mb-3">
-            <div class="card-header">
+        <div class="card-container mb-3">
+            <div>
                 <i class="fa fa-calendar-alt"></i> Tasks today <small class="float-right">{{ today|date }}</small>
             </div>
-            <div class="card-body">
+            <hr>
+            <div>
                 <small>
                     {% if priority_tasks_today.count %}
                     <span class="badge badge-danger badge-pill">{{ priority_tasks_today.count }}</span>
@@ -32,11 +33,12 @@
         </div>
     </div>
     <div class="col-sm-4">
-        <div class="card border-success mb-3">
-            <div class="card-header">
+        <div class="card-container mb-3">
+            <div>
                 <i class="fa fa-calendar-alt"></i> Tasks yesterday <small class="float-right">{{ yesterday|date }}</small>
             </div>
-            <div class="card-body">
+            <hr>
+            <div>
                 <small>
                     {% if priority_tasks_yesterday.count %}
                     <span class="badge badge-danger badge-pill">{{ priority_tasks_yesterday.count }}</span>
@@ -52,11 +54,12 @@
         </div>
     </div>
     <div class="col-sm-4">
-        <div class="card border-info mb-3">
-            <div class="card-header">
+        <div class="card-container mb-3">
+            <div>
                 <i class="fa fa-calendar-alt"></i> All tasks
             </div>
-            <div class="card-body">
+            <hr>
+            <div>
                 <small>
                     {% if priority_tasks.count %}
                     <span class="badge badge-danger badge-pill">{{ priority_tasks.count }}</span>
@@ -74,24 +77,24 @@
 </div>
 <div class="row">
     <div class="col-sm-12">
-        <div class="card">
-            <div class="card-header">
+        <div class="card-container">
+            <div>
                 <strong>
-                    My Tasks
-                    <small>
-                        {% if perms.tasks %}
-                            {% if perms.tasks.add_task %}
-                                <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
-                                    <i class="fa-regular fa-square-plus"></i> Add Task
-                                </button>
-                            {% endif %}
-                        {% else %}
-                            <p>You don't have permission to do anything in the foo app.</p>
-                        {% endif %}
-                    </small>
+                    Tasks list
                 </strong>
+                
+                {% if perms.tasks %}
+                    {% if perms.tasks.add_task %}
+                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
+                            <i class="fa-regular fa-square-plus"></i> Add Task
+                        </button>
+                    {% endif %}
+                {% else %}
+                    <p>You don't have permission to do anything in the foo app.</p>
+                {% endif %}
             </div>
-            <div class="card-body">
+            <hr>
+            <div>
                 <table class="table table-sm" id="tasks">
                     <thead>
                         <tr>

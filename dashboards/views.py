@@ -35,9 +35,10 @@ class DashboardView(View):
             .values('day') \
             .annotate(c=Count(F('id'))) \
             .order_by('day')
-        active_users = User.objects.filter(is_active=True).filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month))
+        active_users = User.objects.filter(is_active=True)
         designer_points = active_users.filter(task__is_done=True) \
-            .annotate(total_points=Sum(F('task__task_category__task_point')) + Sum(F('task__task_type__task_point'))) \
+            .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
+            .annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point')) \
             .order_by('-total_points')
             # .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
             
