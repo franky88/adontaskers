@@ -3,6 +3,27 @@
     {% include 'includes/messages.html' %}
 {% endif %}
 <div class="row">
+    <div class="col-sm-12">
+        <div class="card-container border-success">
+            {% if perms.tasks %}
+                {% if perms.tasks.add_task %}
+                    <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
+                        <i class="fa-regular fa-square-plus"></i> Add Task
+                    </button>
+                {% endif %}
+            {% else %}
+                <p>You don't have permission to do anything in the foo app.</p>
+            {% endif %}
+            <div>
+                <small class="text-muted">Total of <strong>{{ total_completed.count }}</strong> tasks</small>
+                <h3>{{ done_tasks_this_month.count }} {% if done_tasks_this_month.count > 1 %}tasks{% else %}task{% endif %} completed</h3>
+                <small>for the month of {{ today|date:'F' }}</small>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-sm-4">
         <!-- <hr> -->
         <div class="list-group mb-3">
@@ -49,24 +70,22 @@
                 
             </div>
         </div> -->
-        <div class="card-container mb-3">
-<!--            <div class="card-body">-->
-                <strong>Completed</strong>
-                {% if perms.tasks %}
-                    {% if perms.tasks.add_task %}
-                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
-                            <i class="fa-regular fa-square-plus"></i> Add Task
-                        </button>
-                    {% endif %}
-                {% else %}
-                    <p>You don't have permission to do anything in the foo app.</p>
-                {% endif %}
-                <hr>
-                <small class="text-muted">total of <strong>{{ total_completed.count }}</strong> tasks</small>
-                <h2>{{ done_tasks_this_month.count }} {% if done_tasks_this_month.count > 1 %}tasks{% else %}task{% endif %}</h2>
-                <small>are for the month of {{ today|date:'F' }}</small>
-<!--            </div>-->
-        </div>
+<!--        <div class="card-container mb-3">-->
+<!--                <strong>Completed</strong>-->
+<!--                {% if perms.tasks %}-->
+<!--                    {% if perms.tasks.add_task %}-->
+<!--                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">-->
+<!--                            <i class="fa-regular fa-square-plus"></i> Add Task-->
+<!--                        </button>-->
+<!--                    {% endif %}-->
+<!--                {% else %}-->
+<!--                    <p>You don't have permission to do anything in the foo app.</p>-->
+<!--                {% endif %}-->
+<!--                <hr>-->
+<!--                <small class="text-muted">total of <strong>{{ total_completed.count }}</strong> tasks</small>-->
+<!--                <h2>{{ done_tasks_this_month.count }} {% if done_tasks_this_month.count > 1 %}tasks{% else %}task{% endif %}</h2>-->
+<!--                <small>are for the month of {{ today|date:'F' }}</small>-->
+<!--        </div>-->
     </div>
     <div class="col-sm-8">
         <div class="card-container">
