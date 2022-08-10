@@ -1,3 +1,4 @@
+from email.mime import image
 from statistics import mode
 from tabnanny import verbose
 from django.db import models
@@ -7,6 +8,16 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 from django.utils import timezone
 # Create your models here.
+def save_image_location(instance, filename):
+    imgpath = "image_{0}/{1}".format(instance.id, filename)
+    return imgpath
+
+class DesignerProfile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=save_image_location, blank=True, null=True)
+    def __str__(self):
+        return self.user.username
+
 class UserLogs(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     time_in = models.DateTimeField(default=timezone.now)

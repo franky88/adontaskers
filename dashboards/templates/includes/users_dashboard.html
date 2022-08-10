@@ -64,7 +64,7 @@
                         </div>
                     </div> -->
                     <div class="media mb-2">
-                        <img style="width: 64px; height: auto; border-radius: 32px;" class="mr-3" src="{% static '/img/ivana-square.jpg' %}" alt="Generic placeholder image">
+                        <img style="width: 64px; height: auto; border-radius: 32px;" class="mr-3" {% for i in user.designerprofile_set.all %} src="{{ i.image.url }}" {% endfor %} alt="Generic placeholder image">
                         <div class="media-body">
                             <strong class="mt-0">{{ user.get_username|title }}</strong>
                         </div>
