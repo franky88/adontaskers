@@ -34,11 +34,11 @@
     line-height: 1.2;
 }
 .note {
-    background-color: white;
+    background-color: rgba(184, 198, 219, 0.945);
     padding: 10px;
     box-shadow: 0 0 10px rgba(34, 34, 34, 0.1);
     margin-bottom: 10px;
-    border-radius: 5px;
+    /* border-radius: 5px; */
 }
 .note small .delete-note {
     color: red;
@@ -86,4 +86,9 @@
     padding: 10px;
     margin-top: 10px;
     border-radius: 5px;
+}
+.note-scroll {
+    height: 1000px;
+    overflow: auto;
+    background-color: #222 !important;
 }

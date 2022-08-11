@@ -45,9 +45,20 @@
         <script>
             $(document).ready(function() {
                 $('#tasks').DataTable();
+                // $("[data-toggle=popover]").popover();
             } );
+            $(document).ready(function(){
+                $('[data-toggle="popover"]').popover();
+            });
             $(function () {
-              $('[data-toggle="tooltip"]').tooltip()
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+            $(function () {
+                // $('[data-toggle="popover"]').popover();
+                $('#example').popover('data-animation=true');
+                // $('.popover-dismiss').popover({
+                //     trigger: 'focus'
+                // })
             })
         </script>
     </body>

@@ -3,8 +3,8 @@
 {% block content %}
 <div class="row">
     <div class="col-sm-7">
-        <div class="card">
-            <div class="card-body">
+        <div class="card-container">
+            <div>
                 <h3>Update task</h3>
                 <hr>
                 <form method="POST">
@@ -17,8 +17,8 @@
         </div>
     </div>
     <div class="col-sm-5">
-        <div class="card mb-3">
-            <div class="card-body">
+        <div class="card-container mb-3">
+            <div>
                 <h3>Task notes</h3>
                 <hr>
                 {% for remark in task.taskremark_set.all %}

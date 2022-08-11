@@ -177,10 +177,15 @@ class DeleteTaskView(View):
 @login_required()
 def delete_note(request, pk):
     note = get_object_or_404(TaskRemark, pk=pk)
-    note.delete()
-    messages.add_message(request, messages.SUCCESS,
-                         'Note successfully deleted.')
-    return redirect("taskers:taskdetail", note.task.slug)
+    if request.user.username == note.user.username or request.user.is_superuser:
+        note.delete()
+        messages.add_message(request, messages.SUCCESS,
+                            'Note successfully deleted.')
+        return redirect("taskers:taskdetail", note.task.slug)
+    else:
+        messages.add_message(request, messages.WARNING,
+                            'Request denied.')
+        return redirect("taskers:taskdetail", note.task.slug)
 
 
 class TaskPriorityView(View):

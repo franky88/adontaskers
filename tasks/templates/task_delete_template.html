@@ -8,17 +8,18 @@
     </ol>
 </nav>
 <div class="row">
-    <div class="col-xl-8 col-lg-7">
-        <div class="card shadow mb-4">
-            <div class="card-header">
+    <div class="col-xl-12 col-lg-7">
+        <div class="card-container mb-4">
+            <div>
                 {{title|title}}
             </div>
             <form action="" method="POST">
                 {% csrf_token %}
-                <div class="card-body">
+                <div>
                     <p>Are you sure you want to delete <strong>{{ task.name|title }}</strong>?</p>
                 </div>
-                <div class="card-footer">
+                <hr>
+                <div>
                     <a href="{{request.META.HTTP_REFERER}}" class="btn btn-secondary btn-sm">No</a>
                     <input type="submit" value="Yes" class="btn btn-danger btn-sm">
                 </div>

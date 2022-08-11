@@ -33,12 +33,23 @@
             {% if task %}
             <div class="card card-container">
                 <div>
-                    <strong>{{ task.name|title }}</strong>
-                    {% if task.is_priority %}
-                        <small class="float-right" style="color: white; background-color: hsla(0, 95%, 49%, 0.7); padding: 5px; border-radius: 5px;">
-                            PRIORITY
-                        </small>
-                    {% endif %}
+                    
+                    <strong>
+                        {% if task.is_priority %}
+                            <small style="color: white; background-color: hsla(0, 86%, 52%, 0.884); width: 100px; padding: 3px 6px; border-radius: 50%;">
+                                P
+                            </small>
+                            &nbsp 
+                        {% endif %}
+                        {{ task.name|title }}
+                        <!-- <a tabindex="0" class="float-right btn btn-sm" role="button" data-toggle="popover" data-trigger="focus" title="Options" data-content="<a href='sample'>Details</a>"><i class="fa-solid fa-ellipsis-vertical"></i></a> -->
+                        <!-- <a href="" class="float-right">Details</a> -->
+                        <!-- <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">Dismissible popover</a> -->
+                        <!-- <button type="button" id="example" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+                            Popover on right
+                        </button> -->
+                        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">Toggle popover</a>
+                    </strong>
                     <br>
                     <small>
                         {{ task.task_category|title }} - ({{ task.task_type|title }})

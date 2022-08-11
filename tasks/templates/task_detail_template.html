@@ -13,9 +13,9 @@
 {% if instance.is_done %}
 <div class="row">
     <div class="col-sm-6">
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Task Details
+        <div class="card-container mb-3">
+            <div>
+                <h5>Task Details
                     <!-- {% if instance.is_done %}
                     {% else %}
                         {% if perm.tasks_delete_task %}
@@ -53,21 +53,23 @@
         </div>
     </div>
     <div class="col-sm-6">
-        <div class="card">
-            <div class="card-body">
+        <div class="card-container">
+            <div>
                 <h5>Task notes</h5>
                 <hr>
+                <div class="note-scroll">
                 {% for note in instance.taskremark_set.all %}
                     <div class="note">
                         {% if not note.remarks %}
                             <p>No notes here...</p>
                         {% else %}
-                            <small><u>Posted by <a href="">{{ note.user|title }}</a></u></small>
+                            <small><u>Posted by: <a href="">{{ note.user|title }}</a></u></small>
                             <p>{{ note.remarks }}</p>
-                            <small>Posted {{note.created|timesince}} ago</a></small> <br>
+                            <small class="text-muted">Posted {{note.created|timesince}} ago</a></small> <br>
                         {% endif %}
                     </div>
                 {% endfor %}
+                </div>
             </div>
         </div>
     </div>
@@ -75,8 +77,8 @@
 {% else %}
 <div class="row">
     <div class="col-sm-4">
-        <div class="card text-white bg-dark mb-3">
-            <div class="card-body">
+        <div class="card-container mb-3">
+            <div>
                 <h5>Update Task</h5>
                 <hr>
                 <form method="POST">
@@ -89,9 +91,9 @@
         </div>
     </div>
     <div class="col-sm-8">
-        <div class="card mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Task Details
+        <div class="card-container mb-3">
+            <div>
+                <h5>Task Details
                     {% if perms.tasks %}
                         {% if perms.tasks_delete_task %}
                             <a href="{% url 'taskers:taskdelete' instance.slug %}" class="btn btn-outline-danger btn-sm float-right"><i class="fa-regular fa-trash-can"></i></a>
@@ -126,30 +128,33 @@
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
+        <div class="card-container">
+            <div>
                 <h5>Task notes</h5>
                 <hr>
+                <div class="note-scroll">
                 {% for note in instance.taskremark_set.all %}
                     <div class="note">
                         {% if not note.remarks %}
                         <p>No notes here...</p>
+                        
                         {% else %}
-                            <small><u>Posted by <a href="">{{ note.user|title }}</a> </u>
-                                {% if perms.tasks %}
-                                    {% if perms.tasks.delete_taskremark %}
-                                        <a href="{% url 'taskers:delete_note' note.pk %}" class="float-right delete-note"><i class="fa-regular fa-trash-can"></i></a>
+                                <small><u>Posted by <a href="">{{ note.user|title }}</a> </u>
+                                    {% if perms.tasks %}
+                                        {% if perms.tasks.delete_taskremark %}
+                                            <a href="{% url 'taskers:delete_note' note.pk %}" class="float-right delete-note"><i class="fa-regular fa-trash-can"></i></a>
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                            </small>
-                            <p>{{ note.remarks }}</p>
-                            <small>Posted {{note.created|timesince}} ago</small> <br>
+                                </small>
+                                <p>{{ note.remarks }}</p>
+                                <small>Posted {{note.created|timesince}} ago</small> <br>
                         {% endif %}
                     </div>
                 {% endfor %}
+                </div>
                 {% if perms.tasks %}
                     {% if perms.tasks.add_taskremark %}
-                        <button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#addNote">
+                        <button type="button" class="btn btn-outline-primary btn-sm mt-3" data-toggle="modal" data-target="#addNote">
                             Add note
                         </button>
                     {% endif %}
