@@ -41,16 +41,35 @@
                             </small>
                             &nbsp 
                         {% endif %}
-                        {{ task.name|title }}
+                        {{ task.name|cut:"3" }}
                         <!-- <a tabindex="0" class="float-right btn btn-sm" role="button" data-toggle="popover" data-trigger="focus" title="Options" data-content="<a href='sample'>Details</a>"><i class="fa-solid fa-ellipsis-vertical"></i></a> -->
                         <!-- <a href="" class="float-right">Details</a> -->
                         <!-- <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">Dismissible popover</a> -->
                         <!-- <button type="button" id="example" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
                             Popover on right
                         </button> -->
-                        <a href="#" data-toggle="popover" title="Popover Header" data-content="Some content inside the popover">Toggle popover</a>
+                        {% if not task.is_done %}
+                            <span class="float-right">
+                                {% if perms.tasks %}
+                                    {% if perms.tasks.change_task %}
+                                        <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>
+                                    {% endif %}
+                                    {% if perms.tasks.delete_task %}
+                                        <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-trash-can"></i></a>
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        {% else %}
+                            <span class="float-right">
+                                {% if perms.tasks %}
+                                    {% if perms.tasks.view_task %}
+                                        <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-rectangle-list"></i></a>
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        {% endif %}
                     </strong>
-                    <br>
+                    <hr>
                     <small>
                         {{ task.task_category|title }} - ({{ task.task_type|title }})
                         <br>
@@ -61,23 +80,6 @@
                         {% endif %}
                     </small>
                     <br>
-                    <br>
-                    {% if not task.is_done %}
-                        {% if perms.tasks %}
-                            {% if perms.tasks.change_task %}
-                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>
-                            {% endif %}
-                            {% if perms.tasks.delete_task %}
-                                <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-trash-can"></i></a>
-                            {% endif %}
-                        {% endif %}
-                    {% else %}
-                        {% if perms.tasks %}
-                            {% if perms.tasks.view_task %}
-                                <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-rectangle-list"></i> Details</a>
-                            {% endif %}
-                        {% endif %}
-                    {% endif %}
                 </div>
                 <div>
                     <small class="text-muted">Created: {{task.created|date}} | by: 
