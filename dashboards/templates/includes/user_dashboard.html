@@ -49,12 +49,14 @@
 {% endif %}
 <div class="row">
     <div class="col-sm-3">
-        <div class="card border-primary mb-2">
-            <div class="card-body">
+        <div class="card-container mb-2">
+            <div>
                 <strong>
                     {{ request.user.get_username|title }}
                     {% if request.user.is_active %}
                     <small class="float-right">Status: Active</small>
+                    {% else %}
+                    <small class="float-right">Status: Inactive</small>
                     {% endif %}
                 </strong>
                 <hr>
@@ -84,19 +86,20 @@
                         </span>
                     </a>
                 </div>
-                {% if perms.tasks %}
-                    {% if perms.tasks.add_task %}
-                        <button type="button" class="btn btn-primary btn-sm float-right" data-toggle="modal" data-target="#exampleModalCenter">
-                            <i class="fa-regular fa-square-plus"></i> Add Task
-                        </button>
-                    {% endif %}
-                {% endif %}
+                
             </div>
+            {% if perms.tasks %}
+                {% if perms.tasks.add_task %}
+                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModalCenter">
+                        <i class="fa-regular fa-square-plus"></i> Add Task
+                    </button>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
     <div class="col-sm-9">
-        <div class="card border-primary mb-2">
-            <div class="card-body">
+        <div class="card-container border-primary mb-2">
+            <div>
                 <strong>Completed tasks per day</strong>
                 <hr>
                 <canvas id="myPerDayTaskChart" width="1000" height="250"></canvas>
@@ -106,11 +109,12 @@
 </div>
 <div class="row">
     <div class="col-sm-3">
-        <div class="card border-success mb-2">
-            <div class="card-header">
+        <div class="card-container border-success mb-2">
+            <div>
                 <strong>Tasks report summary</strong>
+                <hr>
             </div>
-            <div class="card-body">
+            <div>
                 <h6>
                     Total points for the month
                     <br>

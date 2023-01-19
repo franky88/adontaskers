@@ -37,10 +37,11 @@ class DashboardView(View):
             .annotate(c=Count(F('id'))) \
             .order_by('day')
         active_users = User.objects.filter(is_active=True)
-
-        designer_points = User.objects.filter(task__is_done=True) \
+        designers_task_per_day = User.objects.filter(task__is_done=True).filter(task__updated__date=self.today.date()).annotate(total=Count('task')).order_by('-total')
+        print('sample', designers_task_per_day)
+        designer_points = User.objects.filter(is_active=True).filter(task__is_done=True) \
             .filter(task__updated__range=[str(self.start_date), str(self.end_date)]) \
-            .annotate(total_points=Sum('task__task_category__task_point') + Sum('task__task_type__task_point')) \
+            .annotate(total_points=Sum(F('task__task_category__task_point')) + Sum (F('task__task_type__task_point'))) \
             .order_by('-total_points')
             # .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
         # for d in designer_points:
@@ -62,7 +63,7 @@ class DashboardView(View):
             .filter(is_done=True)
         total_completed = Task.objects.filter(is_done=True)
         task_cats = TaskCategory.objects.all()
-        user_tasks_per_day = Task.objects.filter(updated__range=(self.start_date, self.end_date)) \
+        user_tasks_per_day = Task.objects.filter(updated__range=[self.start_date, self.end_date]) \
             .filter(is_done=True) \
             .filter(user=request.user) \
             .annotate(day=TruncDay(self.wrapped_expression)) \
@@ -89,7 +90,8 @@ class DashboardView(View):
             'user_total_points': user_total_points,
             'total_completed': total_completed,
             'tasks_per_day': tasks_per_day,
-            'user_tasks_per_day': user_tasks_per_day
+            'user_tasks_per_day': user_tasks_per_day,
+            'designers_task_per_day': designers_task_per_day
             }
         return render(request, self.template_name, context)
 

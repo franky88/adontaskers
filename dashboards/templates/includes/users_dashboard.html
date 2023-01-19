@@ -26,47 +26,16 @@
 </div>
 <div class="row">
     <div class="col-sm-4">
-        <!-- <hr> -->
         <div class="list-group mb-3">
-            <!-- {% for user in designer_points %}
-                <a href="{% url 'dashboards:userdetails' user.username %}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">
-                    <div>
-                        {{ user.get_username|title }} <br>
-                        <small>Total points for the month</small>
-                    </div>
-                    <div>
-                        <h3>{{ user.total_points }}</h3>
-                    </div>
-                </a>
-            {% endfor %} -->
             <div class="card-container">
                 <strong>Designers</strong>
                 <hr>
-                {% for user in designer_points %}
-                    <!-- <div class="designers-card">
-                        <div class="item">
-                            <i class="fa fa-user-circle"></i>
-                        </div>
-                        <div class="item">
-                            <div>
-                                <span>
-                                    <i class="fa fa-user-circle"></i>
-                                </span>
-                                {{ user.get_username|title }} <br>
-                                <small>2 tasks completed today</small>
-                            </div>
-                        </div>
-                        <div class="item">
-                            <strong>{{ user.total_points }} points</strong>
-                            <small class="float-right">
-                                <a href="{% url 'dashboards:userdetails' user.username %}" >Details</a>
-                            </small>
-                        </div>
-                    </div> -->
+                {% for user in designers_task_per_day %}
                     <div class="media mb-2">
                         <img style="width: 64px; height: auto; border-radius: 32px;" class="mr-3" {% for i in user.designerprofile_set.all %} src="{{ i.image.url }}" {% endfor %} alt="Generic placeholder image">
                         <div class="media-body">
-                            <strong class="mt-0">{{ user.get_username|title }}</strong>
+                            <strong class="mt-0"><a href="{% url 'dashboards:userdetails' user.get_username %}">{{ user.get_username|title }}</a></strong>
+                            <h2 class="mt-0">{{ user.total }}</h2>
                         </div>
                     </div>
                 {% endfor %}

@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 import datetime
 from django.utils import timezone
-from django.db.models import Sum
+from django.db.models import Sum 
 from django.db.models import Q
 from .models import Task, TaskRemark
 from .forms import RemarksForm, TaskForm, AdminTaskForm

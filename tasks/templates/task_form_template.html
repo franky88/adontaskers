@@ -210,36 +210,19 @@
                             </td>
                             <td>
                                 <h5>{{ task.name|title }}</h5>
-                            </td>
-                            <td>
-                                {{ task.task_category|title }} - ({{ task.task_type|title }})
-                            </td>
-                            <td>
-                                <!-- <strong>Date started</strong> <br> -->
-                                {{ task.created|date }}
-                            </td>
-                            <td>
-                                {% if task.is_done %}
-                                <div class="alert alert-success">
-                                    <div>
-                                        <strong>Completed!</strong>
-                                        <small>{{ task.updated|date }} | by {{task.user}}</small> <br>
-                                        {% if task.is_priority %}
-                                            <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% else %}
-                                <div class="alert alert-info">
-                                    <div >
-                                        <strong>Work in progress...</strong> 
-                                        <small>By {{task.user|title}}</small> <br>
-                                        {% if task.is_priority %}
-                                            <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is priority.</small>
-                                        {% endif %}
-                                    </div>
-                                </div>
-                                {% endif %}
+                                <small class="text-muted">{{ task.task_category|title }} - ({{ task.task_type|title }})
+                                    {% if task.is_priority %}
+                                        <small style="color: rgb(237, 45, 77);"><strong>Note:</strong>  This task is urgent.</small>
+                                    {% endif %}
+                                </small><br>
+                                <small class="text-muted">Status:
+                                    {% if task.is_done %}
+                                    <strong> Completed!</strong> <br>
+                                    {% else %}
+                                    <strong>Work in progress...</strong> <br>
+                                    {% endif %}
+                                </small>
+                                <small class="text-muted">Created: {{ task.created|date }} | by {{task.user}}</small>
                             </td>
                             <td>
                                 {% if not task.is_done %}

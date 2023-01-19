@@ -29,7 +29,9 @@
                     <p class="card-text">
                         <small><strong>Task type: </strong>{{ instance.task_type|title }}</small> <br>
                         <small><strong>Task Categories: </strong>{{ instance.task_category|title }}</small> <br>
-                        <small><strong>Paradise link: </strong><a href="{{ instance.paradise_link }}">{{ instance.paradise_link }}</a></small> <br>
+                        {% if instance.paradise_link %}
+                        <small><strong>Paradise link: </strong><a href="{{ instance.paradise_link }}"> --> View in paradise</a></small> <br>
+                        {% endif %}
                         <small><strong>Date Started: </strong>{{ instance.created|date }}</small> <br>
                     </p>
                     {% if instance.is_priority %}
@@ -60,7 +62,8 @@
                 <div class="note-scroll">
                 {% for note in instance.taskremark_set.all %}
                     <div class="note">
-                        {% if not note.remarks %}
+                        {{note.count}}
+                        {% if note.count == 0 %}
                             <p>No notes here...</p>
                         {% else %}
                             <small><u>Posted by: <a href="">{{ note.user|title }}</a></u></small>
@@ -135,6 +138,7 @@
                 <div class="note-scroll">
                 {% for note in instance.taskremark_set.all %}
                     <div class="note">
+                        <!-- {{note.remarks}} -->
                         {% if not note.remarks %}
                         <p>No notes here...</p>
                         

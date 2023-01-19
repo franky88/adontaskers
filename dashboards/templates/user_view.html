@@ -179,8 +179,8 @@
 </nav>
 <div class="row">
     <div class="col-sm-3">
-        <div class="card mb-3 bg-success text-white">
-            <div class="card-body">
+        <div class="card-container mb-3 bg-success text-white">
+            <div>
                 <strong>Completed</strong>
                 <hr>
                 <small><strong>{{ total_user_tasks }}</strong> total tasks</small>
@@ -190,8 +190,8 @@
         </div>
     </div>
     <div class="col-sm-3">
-        <div class="card mb-3">
-            <div class="card-body">
+        <div class="card-container mb-3">
+            <div>
                 <strong>Total</strong>
                 <hr>
                 <small class="text-muted"><strong>{{ designer_points.total_points }}</strong> points for <b>{{ designer_points|title }}</b></small>
@@ -203,8 +203,8 @@
         </div>
     </div>
     <div class="col-sm-6">
-        <div class="card border-info">
-            <div class="card-body">
+        <div class="card-container border-info">
+            <div>
                 <strong>Completed tasks per day </strong><small class="float-right">for the month of <strong>{% now 'F' %}</strong></small>
                 <hr>
                 <canvas id="userTaskPerDayChart" height="63"></canvas>
@@ -212,5 +212,15 @@
         </div>
     </div>
 </div>
-    
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card-container mt-3">
+            <strong>Tasks</strong>
+            <hr>
+            {% for task in tasks %}
+                {{ task }} || {{ task.task_category.name }} || {{ task.task_category.task_point }} || {{ task.task_type.name }} || {{ task.task_type.task_point }} <br>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

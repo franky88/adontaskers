@@ -92,10 +92,3 @@ def pre_save_task_slug(instance, created, *args, **kwargs):
                        str(uuid.uuid4()).replace("-", "").upper()[:8])
         instance.slug = slug
         instance.save()
-        # if not instance.slug:
-        #     slug = slugify(instance.name)
-        #     instance.slug = slug
-    # if instance.slug:
-    #     slug = slugify(instance.name + " " +
-    #                    str(uuid.uuid4()).replace("-", "").upper()[:8])
-    #     instance.slug = slug
