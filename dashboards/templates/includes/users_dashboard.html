@@ -66,6 +66,7 @@
     <div class="col-sm-8">
         <div class="card-container">
             <strong>Designer's total points of the month</strong>
+            <small class="float-right">{{ today|date:'F Y' }}</small>
             <hr>
             <canvas id="myChart" height="80"></canvas>
         </div>
@@ -73,7 +74,7 @@
             <!-- {% for t in tasks_per_day %}
                 <strong style="color: red;">{{t.day|date:'F j'}}</strong> ({{t.c}})
             {% endfor %} -->
-            <strong>Completed tasks per day</strong>
+            <strong>Completed tasks</strong>
             <hr>
             <canvas id="perDayTaskChart" height="80"></canvas>
         </div>

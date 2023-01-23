@@ -446,3 +446,26 @@ class AllCompletedTaskView(View):
         page_obj = paginator.get_page(page_number)
         context = {'tasks': tasks, 'title': 'completed tasks', 'page_obj': page_obj,}
         return render(request, self.template_name, context)
+
+class TasksArchiveView(View):
+    today = timezone.now()
+    yesterday = today - timezone.timedelta(days=1)
+    template_name = 'tasks_archive_template.html'
+
+    def get(self, request, *args, **kwargs):
+        tasks = Task.objects.filter(is_done=True)
+        query = request.GET.get('q')
+        if query:
+            tasks = tasks.filter(
+                Q(user__username__startswith=query) |
+                Q(task_type__name__startswith=query) |
+                Q(task_category__name__startswith=query) |
+                Q(name__startswith=query) |
+                Q(paradise_link__icontains=query) |
+                Q(check_list_link__icontains=query) 
+            ).distinct()
+        paginator = Paginator(tasks, 12)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context = {'tasks': tasks, 'title': 'archived tasks', 'page_obj': page_obj,}
+        return render(request, self.template_name, context)

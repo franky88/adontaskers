@@ -23,9 +23,6 @@ class DashboardView(View):
     wrapped_expression = ExpressionWrapper(expression, output_field=DateTimeField())
     start_date = datetime.date(today.year, today.month, 1)
     end_date = datetime.date(today.year, today.month, today.day)
-    # print(last_day_of_the_month)
-    # print(monthly_range)
-    print(str(start_date), str(end_date))
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
@@ -38,20 +35,20 @@ class DashboardView(View):
             .order_by('day')
         active_users = User.objects.filter(is_active=True)
         designers_task_per_day = User.objects.filter(task__is_done=True).filter(task__updated__date=self.today.date()).annotate(total=Count('task')).order_by('-total')
-        print('sample', designers_task_per_day)
         designer_points = User.objects.filter(is_active=True).filter(task__is_done=True) \
-            .filter(task__updated__range=[str(self.start_date), str(self.end_date)]) \
-            .annotate(total_points=Sum(F('task__task_category__task_point')) + Sum (F('task__task_type__task_point'))) \
+            .filter(task__updated__year=self.today.year, task__updated__month=self.today.month) \
+            .annotate(total_points=Sum(F('task__task_category__task_point') + F('task__task_type__task_point'))) \
             .order_by('-total_points')
             # .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
-        # for d in designer_points:
-        #     print(d.username)
-        #     for t in d.task_set.all():
-        #         print(t)
-        print('points', designer_points)
+        for d in designer_points:
+            print(d.username)
+            print(d.total_points)
+            for t in d.task_set.all():
+                print(t)
         tasks_this_month = Task.objects.filter(is_done=True) \
             .filter(updated__year=self.today.year, updated__month=self.today.month)
         # tasks_this_month = Task.objects.filter(is_done=True).filter(updated__range=[str(self.today.year)+"-"+str(self.today.month)+"-"+"1", str(self.today.year)+"-"+str(self.today.month)+"-"+str(self.last_day_of_the_month)])
+        
         user_total_points = User.objects.filter(username=request.user) \
             .filter(task__is_done=True) \
             .aggregate(total_sum=Sum('task__task_category__task_point') + Sum('task__task_type__task_point'))

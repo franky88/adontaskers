@@ -20,13 +20,23 @@
     </div>
 </div> -->
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-3">
+        <div class="card-container">
+            <strong>Filters</strong>
+            <hr>
+        </div>
+    </div>
+    <div class="col-sm-9">
         <div class="mb-4">
-            <strong>{{ title|title }}</strong>
-            <form class="form-inline my-2 my-lg-0 float-right">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ request.GET.q }}">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            <div class="card-container">
+                <strong>{{ title|title }}</strong>
+                <form class="form-inline my-2 my-lg-0 float-right">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ request.GET.q }}">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                <br>
+                <br>
+            </div>
         </div>
         <div class="card-columns">
             {% for task in page_obj %}
@@ -36,12 +46,17 @@
                     
                     <strong>
                         {% if task.is_priority %}
-                            <small style="color: white; background-color: hsla(0, 86%, 52%, 0.884); width: 100px; padding: 3px 6px; border-radius: 50%;">
-                                P
+                            <small class="float-left" style="color: rgba(238, 27, 27, 0.884);">
+                                PRIO
                             </small>
                             &nbsp 
                         {% endif %}
-                        {{ task.name|cut:"3" }}
+                        {% if task.is_done %}
+                            <i class="fa-regular fa-circle-check text-muted"></i> 
+                        {% endif %}
+                        <a href="{% url 'taskers:taskdetail' task.slug %}">
+                            {{ task.name|truncatechars:"20" }}
+                        </a>
                         <!-- <a tabindex="0" class="float-right btn btn-sm" role="button" data-toggle="popover" data-trigger="focus" title="Options" data-content="<a href='sample'>Details</a>"><i class="fa-solid fa-ellipsis-vertical"></i></a> -->
                         <!-- <a href="" class="float-right">Details</a> -->
                         <!-- <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">Dismissible popover</a> -->
@@ -51,22 +66,15 @@
                         {% if not task.is_done %}
                             <span class="float-right">
                                 {% if perms.tasks %}
-                                    {% if perms.tasks.change_task %}
+                                    <!-- {% if perms.tasks.change_task %}
                                         <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>
-                                    {% endif %}
+                                    {% endif %} -->
                                     {% if perms.tasks.delete_task %}
                                         <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-trash-can"></i></a>
                                     {% endif %}
                                 {% endif %}
                             </span>
-                        {% else %}
-                            <span class="float-right">
-                                {% if perms.tasks %}
-                                    {% if perms.tasks.view_task %}
-                                        <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-success btn-sm"><i class="fa-regular fa-rectangle-list"></i></a>
-                                    {% endif %}
-                                {% endif %}
-                            </span>
+                        
                         {% endif %}
                     </strong>
                     <hr>

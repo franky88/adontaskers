@@ -24,33 +24,33 @@
                     {% endif %} -->
                 </h5>
                 <hr>
-                <h4>{{ instance.name|title }}</h4>
-                <div class="text-details">
-                    <p class="card-text">
-                        <small><strong>Task type: </strong>{{ instance.task_type|title }}</small> <br>
-                        <small><strong>Task Categories: </strong>{{ instance.task_category|title }}</small> <br>
-                        {% if instance.paradise_link %}
-                        <small><strong>Paradise link: </strong><a href="{{ instance.paradise_link }}"> --> View in paradise</a></small> <br>
-                        {% endif %}
-                        <small><strong>Date Started: </strong>{{ instance.created|date }}</small> <br>
-                    </p>
-                    {% if instance.is_priority %}
+                <div class="mb-3">
+                    <h4>{{ instance.name|title }}</h4>
+                    <small><strong>Task type: </strong>{{ instance.task_type|title }}</small> <br>
+                    <small><strong>Task Categories: </strong>{{ instance.task_category|title }}</small> <br>
+                    {% if instance.paradise_link %}
+                    <small><strong>Paradise link: </strong><a href="{{ instance.paradise_link }}"> --> View in paradise</a></small> <br>
+                    {% endif %}
+                    <small><strong>Date Started: </strong>{{ instance.created|date }}</small> <br>
+                </div>
+                
+
+                {% if instance.is_priority %}
                     <div class="priority">
                         <strong class="priority">Note: </strong><small>This task is priority.</small>
                     </div>
                     <br>
-                    {% endif %}
-                    {% if instance.is_done %}
+                {% endif %}
+                {% if instance.is_done %}
                     <div class="alert alert-success" role="alert">
-                        <strong>Task status: Completed.</strong><br>
+                        <strong><i class="fa-regular fa-circle-check"></i> Completed.</strong><br>
                         <small>Completion date: {{ instance.updated|date }} | by {{ instance.user|title }}</small>
                     </div>
-                    {% else %}
+                {% else %}
                     <div class="alert alert-info" role="alert">
                         <strong>Working in progress...</strong>
                     </div>
-                    {% endif %}
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
