@@ -34,13 +34,13 @@ class DashboardView(View):
             .annotate(c=Count(F('id'))) \
             .order_by('day')
         active_users = User.objects.filter(is_active=True)
-        designers_task_per_day = User.objects.filter(Q(task__is_done=False) | Q(task__updated__date=self.today.date()))\
+        designers_task_per_day = User.objects.filter(Q(task__is_done=True) & Q(task__updated__date=self.today.date()))\
             .annotate(total=Count('task'))
-        designer_points = User.objects.filter(is_active=True).filter(task__is_done=True) \
-            .filter(task__updated__year=self.today.year, task__updated__month=self.today.month) \
-            .annotate(total_points=Sum(F('task__task_category__task_point') + F('task__task_type__task_point'))) \
+        designer_points = User.objects.filter(Q(is_active=True) & Q(task__is_done=True) & Q(task__updated__year=self.today.year) & Q(task__updated__month=self.today.month))\
+            .annotate(total_points=Sum(F('task__task_category__task_point')) + Sum(F('task__task_type__task_point')))\
             .order_by('-total_points')
             # .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
+        # print("designer points", designer_points.query)
         tasks_this_month = Task.objects.filter(is_done=True) \
             .filter(updated__year=self.today.year, updated__month=self.today.month)
         # tasks_this_month = Task.objects.filter(is_done=True).filter(updated__range=[str(self.today.year)+"-"+str(self.today.month)+"-"+"1", str(self.today.year)+"-"+str(self.today.month)+"-"+str(self.last_day_of_the_month)])
@@ -160,7 +160,7 @@ class UserView(View):
             .filter(task__user=user).annotate(total=Count('task', distinct=True))
         # task_cat = User.objects.filter(username=user.username).filter(task__is_done=True).filter(task__updated__year=self.today.year, task__updated__month=self.today.month).annotate(total=Count('task__task_category'))
         tasks = Task.objects.filter(user__username=user_name) \
-            .filter(is_done=False) \
+            .filter(Q(is_done=False) | Q(updated__date=self.today.date())) \
             .annotate(total=Count('task_category', distinct=True))
         total_user_tasks = Task.objects.filter(user__username=user_name) \
             .filter(is_done=True).count()

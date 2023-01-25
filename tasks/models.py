@@ -76,7 +76,7 @@ class TaskRemark(BaseTime, models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE, default=1)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    remarks = models.TextField()
+    remarks = models.TextField(help_text="You can html elements for your notes")
 
     class Meta:
         ordering = ['-updated', '-created']

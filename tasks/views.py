@@ -5,9 +5,9 @@ import datetime
 from django.utils import timezone
 from django.db.models import Sum 
 from django.db.models import Q
-from .models import Task, TaskRemark
+from .models import Task, TaskRemark, TaskCategory, TaskType
 from .forms import RemarksForm, TaskForm, AdminTaskForm
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views import View
 from django.contrib.auth.decorators import login_required
@@ -28,7 +28,7 @@ class TaskListView(View):
         today = timezone.now()
         yesterday = today - timezone.timedelta(days=1)
         if request.user.is_superuser:
-            tasks = Task.objects.all().filter(is_done=False)
+            tasks = Task.objects.filter(Q(is_done=False) | Q(updated__date=today.date()))
             priority_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_priority=True).filter(is_done=False)
             priority_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_priority=True).filter(is_done=False)
             priority_tasks = Task.objects.filter(is_done=False).filter(is_priority=True)
@@ -38,6 +38,10 @@ class TaskListView(View):
             completed_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_done=True)
             completed_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_done=True)
             completed_tasks = Task.objects.filter(is_done=True)
+            tasks_type = TaskType.objects.filter(Q(task__updated__date=today.date()) | Q(task__is_done=False))\
+                .annotate(total_type=Count('task', distinct=True))
+            tasks_categories = TaskCategory.objects.filter(Q(task__updated__date=today.date()) | Q(task__is_done=False))\
+                .annotate(total_categories=Count('task', distinct=True))
             form = AdminTaskForm(request.POST or None)
         else:
             tasks = Task.objects.all().filter(user=request.user).filter(is_done=False)
@@ -50,6 +54,14 @@ class TaskListView(View):
             completed_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_done=True)
             completed_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=True)
             completed_tasks = Task.objects.filter(user=request.user).filter(is_done=True)
+            tasks_type = TaskType.objects.filter(Q(task__updated__date=today.date()))\
+                .filter(Q(task__user=request.user) & Q(task__is_done=False))\
+                .annotate(total_type=Count('task', distinct=True))
+            for task in tasks_type:
+                print(task.total_type, task)
+            tasks_categories = TaskCategory.objects.filter(Q(task__updated__date=today.date()))\
+                .filter(Q(task__user=request.user) & Q(task__is_done=False))\
+                .annotate(total_categories=Count('task', distinct=True))
             form = self.form_class()
         if request.user.has_perm('auth.view_user'):
             completed_tasks = Task.objects.filter(is_done=True)
@@ -71,7 +83,9 @@ class TaskListView(View):
                     'completed_tasks_yesterday': completed_tasks_yesterday,
                     'priority_tasks': priority_tasks,
                     'completed_tasks': completed_tasks,
-                    'wip_tasks': wip_tasks
+                    'wip_tasks': wip_tasks,
+                    'tasks_type': tasks_type,
+                    'tasks_categories': tasks_categories
                 }
         return render(request, self.template_name, context)
 

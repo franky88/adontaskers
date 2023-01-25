@@ -95,10 +95,10 @@
         var myChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: [{%for task in tasks_per_day%}'{{ task.day|date:'M j' }}',{%endfor%}], //loop through queryset, 
+                labels: [{%for task in tasks_per_day%}'{{ task.day|date:'j' }}',{%endfor%}], //loop through queryset, 
                 datasets: [{
                     // axis: 'y',
-                    label: ' Completed tasks per day',
+                    label: ' Completed',
                     data: [{%for task in tasks_per_day%}'{{ task.c }}',{%endfor%}],
                     tension: 0.1,
                     borderWidth: 1,

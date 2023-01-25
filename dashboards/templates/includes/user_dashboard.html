@@ -48,6 +48,47 @@
     {% include 'includes/messages.html' %}
 {% endif %}
 <div class="row">
+    
+    <div class="col-sm-3">
+        <div class="card-container border-success mb-2">
+            <div>
+                <strong>Tasks report summary</strong>
+                <hr>
+            </div>
+            <div>
+                <h6>
+                    Total points for the month
+                    <br>
+                    <br>
+                    <div style="background-color: rgb(156, 204, 156); padding: 20px; border-radius: 10px; width: auto; color: white; font-weight: bold;">
+                        <h1>
+                            {{ user_total_points.total_sum }}
+                            <small>PTS.</small>
+                        </h1> 
+                    </div>
+                    <small class="text-muted">25% higher compared to previous month</small>
+                    
+                    <!-- <small>{{ done_tasks_this_month.count }}</small>
+                    <small>{{ month }}</small>
+                    <small>{{ year }}</small> -->
+                </h6>
+                {% for cat in tasks_cat %}
+                    {{ cat.name }} - {{cat.task_point}} <br>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="card-container border-primary mb-2">
+            <div>
+                <strong>Completed tasks per day</strong>
+                <hr>
+                <canvas id="myPerDayTaskChart" width="1000" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
     <div class="col-sm-3">
         <div class="card-container mb-2">
             <div>
@@ -98,53 +139,11 @@
         </div>
     </div>
     <div class="col-sm-9">
-        <div class="card-container border-primary mb-2">
-            <div>
-                <strong>Completed tasks per day</strong>
-                <hr>
-                <canvas id="myPerDayTaskChart" width="1000" height="250"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-3">
-        <div class="card-container border-success mb-2">
-            <div>
-                <strong>Tasks report summary</strong>
-                <hr>
-            </div>
-            <div>
-                <h6>
-                    Total points for the month
-                    <br>
-                    <br>
-                    <div style="background-color: rgb(156, 204, 156); padding: 20px; border-radius: 10px; width: auto; color: white; font-weight: bold;">
-                        <h1>
-                            {{ user_total_points.total_sum }}
-                            <small>PTS.</small>
-                        </h1> 
-                    </div>
-                    <small class="text-muted">25% higher compared to previous month</small>
-                    
-                    <!-- <small>{{ done_tasks_this_month.count }}</small>
-                    <small>{{ month }}</small>
-                    <small>{{ year }}</small> -->
-                </h6>
-                {% for cat in tasks_cat %}
-                    {{ cat.name }} - {{cat.task_point}} <br>
-                {% endfor %}
-            </div>
-        </div>
-        
-    </div>
-    <div class="col-sm-9">
         <div class="card-container">
             <strong>Tasks</strong>
         </div>
     </div>
 </div>
-
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

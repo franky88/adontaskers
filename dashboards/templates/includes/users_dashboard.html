@@ -25,10 +25,10 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <div class="list-group mb-3">
             <div class="card-container">
-                <strong>Designers</strong>
+                <strong>Completed tasks today</strong>
                 <hr>
                 {% for user in designers_task_per_day %}
                     <div class="media mb-2">
@@ -37,7 +37,7 @@
                             <strong class="mt-0"><a href="{% url 'dashboards:userdetails' user.get_username %}">{{ user.get_username|title }}</a></strong>
                             <br>
                             <small class="mt-0 text-muted">
-                                {{ user.total }} WIP
+                                {{ user.total }} {% if user.total > 1 %} tasks {% else %} task {% endif %} completed
                             </small>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
 <!--                <small>are for the month of {{ today|date:'F' }}</small>-->
 <!--        </div>-->
     </div>
-    <div class="col-sm-8">
+    <div class="col-sm-9">
         <div class="card-container">
             <strong>Designer's total points of the month</strong>
             <small class="float-right">{{ today|date:'F Y' }}</small>
@@ -94,6 +94,22 @@
             {% endfor %}
             <hr>
             {{designers_task_per_day.query}}
+        </div>
+    </div>
+</div> -->
+
+<!-- <div class="row">
+    <div class="col-sm-12">
+        <div class="card-container">
+            <strong>SLQ QUERIES</strong><br>
+            {{ designer_points.query }}
+            <hr>
+            {% for user in designer_points %}
+                <strong>{{ user }}</strong> <br>
+                {% for task in user.task_set.all %}
+                    <small class="text-muted">{{forloop.counter}} {{ task.name }}</small> <br>
+                {% endfor %}
+            {% endfor %}
         </div>
     </div>
 </div> -->
