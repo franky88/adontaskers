@@ -150,7 +150,7 @@
                                         {% endif %}
                                     {% endif %}
                                 </small>
-                                <p>{{ note.remarks }}</p>
+                                <p>{{ note.remarks|safe }}</p>
                                 <small>Posted {{note.created|timesince}} ago</small> <br>
                         {% endif %}
                     </div>

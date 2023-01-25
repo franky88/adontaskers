@@ -35,7 +35,10 @@
                         <img style="width: 64px; height: auto; border-radius: 32px;" class="mr-3" {% for i in user.designerprofile_set.all %} src="{{ i.image.url }}" {% endfor %} alt="Generic placeholder image">
                         <div class="media-body">
                             <strong class="mt-0"><a href="{% url 'dashboards:userdetails' user.get_username %}">{{ user.get_username|title }}</a></strong>
-                            <h2 class="mt-0">{{ user.total }}</h2>
+                            <br>
+                            <small class="mt-0 text-muted">
+                                {{ user.total }} WIP
+                            </small>
                         </div>
                     </div>
                 {% endfor %}
@@ -75,11 +78,26 @@
                 <strong style="color: red;">{{t.day|date:'F j'}}</strong> ({{t.c}})
             {% endfor %} -->
             <strong>Completed tasks</strong>
+            <small class="float-right">{{ today|date:'F Y' }}</small>
             <hr>
             <canvas id="perDayTaskChart" height="80"></canvas>
         </div>
     </div>
 </div>
+
+<!-- <div class="row">
+    <div class="col-sm-12">
+        <div class="card-container">
+            <strong>ORM to SQL</strong>
+            {% for sqlmap in designers_task_per_day %}
+                {{ slqmap.query}}
+            {% endfor %}
+            <hr>
+            {{designers_task_per_day.query}}
+        </div>
+    </div>
+</div> -->
+
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
