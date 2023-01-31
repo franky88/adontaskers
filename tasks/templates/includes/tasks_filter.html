@@ -22,12 +22,82 @@
 <div class="row">
     <div class="col-sm-3">
         <div class="card-container">
+            <form class="form-inline my-2 my-lg-0">
+                <input style="width: 100%;" class="form-control" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ request.GET.q }}">
+                <button class="btn btn-outline-success my-2" type="submit" hidden>Search</button>
+            </form>
+        </div>
+        <div class="card-container">
             <strong>Filters</strong>
             <hr>
         </div>
     </div>
     <div class="col-sm-9">
-        <div class="mb-4">
+        <div class="card-container">
+            <strong>Tasks list</strong>
+            <hr>
+            <table class="table table-hover table-sm" id="tasks">
+                <thead>
+                    <tr>
+                        <th>Business name</th>
+                        <th>Task type</th>
+                        <th>Paradise link</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for task in page_obj %}
+                    {% if task %}
+                    <tr>
+                        <td>
+                            <strong>
+                                {% if task.is_priority %}
+                                    <small class="float-left" style="color: rgba(238, 27, 27, 0.884);">
+                                        PRIO
+                                    </small>
+                                    &nbsp 
+                                {% endif %}
+                                {% if task.is_done %}
+                                    <i class="fa-regular fa-circle-check text-muted"></i> 
+                                {% endif %}
+                                <a href="{% url 'taskers:taskdetail' task.slug %}">
+                                    {{ task.name|truncatechars:"20" }}
+                                </a>
+                            </strong>
+                        </td>
+                        <td>
+                            {{ task.task_category|title }} - ({{ task.task_type|title }})
+                        </td>
+                        <td>
+                            {% if task.paradise_link %}
+                            <a href="{{ task.paradise_link }}"> -- > View in paradise</a>
+                            {% else %}
+                            No paradise link
+                            {% endif %}
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                {% if task.is_done %}
+                                    <i class="fa-regular fa-circle-check text-muted"></i> 
+                                {% endif %}
+                                Completed <br> {{task.updated|date}} | by: 
+                                {% if request.user.is_superuser %}
+                                <a href="{% url 'dashboards:userdetails' task.user.username %}">{{ task.user.username|title }}</a>
+                                {% else %}
+                                {{ task.user.username|title }}
+                                {% endif %}
+                            </small>
+                        </td>
+                    </tr>
+                    {% else %}
+                        Nothing to display
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- <div class="mb-4">
             <div class="card-container">
                 <strong>{{ title|title }}</strong>
                 <form class="form-inline my-2 my-lg-0 float-right">
@@ -37,88 +107,8 @@
                 <br>
                 <br>
             </div>
-        </div>
-        <div class="card-columns">
-            {% for task in page_obj %}
-            {% if task %}
-            <div class="card card-container">
-                <div>
-                    <strong>
-                        {% if task.is_priority %}
-                            <small class="float-left" style="color: rgba(238, 27, 27, 0.884);">
-                                PRIO
-                            </small>
-                            &nbsp 
-                        {% endif %}
-                        {% if task.is_done %}
-                            <i class="fa-regular fa-circle-check text-muted"></i> 
-                        {% endif %}
-                        <a href="{% url 'taskers:taskdetail' task.slug %}">
-                            {{ task.name|truncatechars:"20" }}
-                        </a>
-                        <!-- <a tabindex="0" class="float-right btn btn-sm" role="button" data-toggle="popover" data-trigger="focus" title="Options" data-content="<a href='sample'>Details</a>"><i class="fa-solid fa-ellipsis-vertical"></i></a> -->
-                        <!-- <a href="" class="float-right">Details</a> -->
-                        <!-- <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="And here's some amazing content. It's very engaging. Right?">Dismissible popover</a> -->
-                        <!-- <button type="button" id="example" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
-                            Popover on right
-                        </button> -->
-                        {% if not task.is_done %}
-                            <span class="float-right">
-                                {% if perms.tasks %}
-                                    <!-- {% if perms.tasks.change_task %}
-                                        <a href="{% url 'taskers:taskdetail' task.slug %}" class="btn btn-outline-info btn-sm"><i class="fa-regular fa-pen-to-square"></i></a>
-                                    {% endif %} -->
-                                    {% if perms.tasks.delete_task %}
-                                        <a href="{% url 'taskers:taskdelete' task.slug %}" class="btn btn-outline-danger btn-sm"><i class="fa-regular fa-trash-can"></i></a>
-                                    {% endif %}
-                                {% endif %}
-                            </span>
-                        
-                        {% endif %}
-                    </strong>
-                    <hr>
-                    <small>
-                        {{ task.task_category|title }} - ({{ task.task_type|title }})
-                        <br>
-                        {% if task.paradise_link %}
-                        <a href="{{ task.paradise_link }}"> -- > View in paradise</a>
-                        {% else %}
-                        No paradise link
-                        {% endif %}
-                    </small>
-                    <br>
-                </div>
-                <div>
-                    <small class="text-muted">Created: {{task.created|date}} | by: 
-                        {% if request.user.is_superuser %}
-                        <a href="{% url 'dashboards:userdetails' task.user.username %}">{{ task.user.username|title }}</a>
-                        {% else %}
-                        {{ task.user.username|title }}
-                        {% endif %}
-                    </small>
-                </div>
-            </div>
-            {% else %}
-                {{ empty }}
-            {% endif %}
-            {% endfor %}
-        </div>
-        <div class="mypagination mb-3">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">&laquo; first</a>
-                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                {% endif %}
+        </div> -->
         
-                <span class="current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
         
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                {% endif %}
-            </span>
-        </div>
     </div>
 </div>

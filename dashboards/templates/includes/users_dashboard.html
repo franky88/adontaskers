@@ -4,7 +4,23 @@
     {% include 'includes/messages.html' %}
 {% endif %}
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-sm-3">
+        <div class="card-container">
+            <strong>Top designer</strong>
+            <hr>
+            <div class="media mb-2">
+                <img style="width: 64px; height: auto; border-radius: 32px;" class="mr-3" {% for img in top_designer_points.designerprofile_set.all %} src="{{ img.image.url }}" {% endfor %} alt="Generic placeholder image">
+                <div class="media-body">
+                    <strong class="mt-0"><a href="{% url 'dashboards:userdetails' top_designer_points.get_username %}"><i class="fa-solid fa-star" style="color: orange;"></i> {{ top_designer_points|title }}</a></strong>
+                    <br>
+                    <small class="mt-0 text-muted">
+                        {{ top_designer_points.total_points }} {% if top_designer_points.total_points > 1 %} points {% else %} point {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
         <div class="card-container border-success">
             {% if perms.tasks %}
                 {% if perms.tasks.add_task %}
@@ -30,6 +46,7 @@
             <div class="card-container">
                 <strong>Completed tasks today</strong>
                 <hr>
+                {% if designers_task_per_day %}
                 {% for user in designers_task_per_day %}
                     <div class="media mb-2">
                         <img style="width: 64px; height: auto; border-radius: 32px;" class="mr-3" {% for i in user.designerprofile_set.all %} src="{{ i.image.url }}" {% endfor %} alt="Generic placeholder image">
@@ -39,9 +56,16 @@
                             <small class="mt-0 text-muted">
                                 {{ user.total }} {% if user.total > 1 %} tasks {% else %} task {% endif %} completed
                             </small>
+                            <small class="text-muted mt-0">
+                                {% for wip in user.task_set.all %}{% if not wip.is_done %}{{ wip.total }}{% endif %}{% endfor %}
+                            </small>
                         </div>
                     </div>
                 {% endfor %}
+                {% else %}
+                <small class="text-muted">No task completed yet.</small>
+                
+                {% endif %}
             </div>
         </div>
         <!-- <div class="card mb-3">

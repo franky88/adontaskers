@@ -245,7 +245,8 @@
                         </td>
                         <td>
                             {% if task.is_done %}
-                                <p style="color: green;"><i class="fa-regular fa-circle-check"></i> Completed</p>
+                                <small style="color: green;"><i class="fa-regular fa-circle-check"></i> Completed</small><br>
+                                <small class="text-muted">{{task.updated|date}}</small>
                             {% else %}
                                 <p style="color: blueviolet;"><i class="fa-solid fa-circle-notch"></i> Work in progress</p>
                             {% endif %}
