@@ -59,6 +59,9 @@
             <div>
                 <h5>Task notes</h5>
                 <hr>
+                {% if not instance.taskremark_set.all %}
+                <small class="text-muted">No notes available</small> 
+                {% else %}
                 <div class="note-scroll">
                 {% for note in instance.taskremark_set.all %}
                     <div class="note">
@@ -72,6 +75,7 @@
                         {% endif %}
                     </div>
                 {% endfor %}
+                {% endif %}
                 </div>
             </div>
         </div>
@@ -135,6 +139,9 @@
             <div>
                 <h5>Task notes</h5>
                 <hr>
+                {% if not instance.taskremark_set.all %}
+                <small class="text-muted">No notes available</small> 
+                {% else %}
                 <div class="note-scroll">
                 {% for note in instance.taskremark_set.all %}
                     <div class="note">
@@ -155,6 +162,7 @@
                         {% endif %}
                     </div>
                 {% endfor %}
+                {% endif %}
                 </div>
                 {% if perms.tasks %}
                     {% if perms.tasks.add_taskremark %}

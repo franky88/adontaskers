@@ -47,17 +47,22 @@
             </div>
             <hr>
             <div>
+                {% if priority_tasks.count %}
                 <small>
-                    {% if priority_tasks.count %}
                     <span class="badge badge-danger badge-pill">{{ priority_tasks.count }}</span>
-                    {% else %}
-                    <span class="badge badge-primary badge-pill">{{ priority_tasks.count }}</span>
-                    {% endif %}
-                    <a href="{% url 'taskers:allprioritytasks' %}"> Priority</a></small> <br>
+                    <a href="{% url 'taskers:allprioritytasks' %}"> Priority</a>
+                </small> <br>
+                {% endif %}
+                {% if wip_tasks.count %}
                 <small><span class="badge badge-primary badge-pill">{{ wip_tasks.count }}</span>
-                    <a href="{% url 'taskers:allwiptasks' %}"> Work in progress</a></small> <br>
+                    <a href="{% url 'taskers:allwiptasks' %}"> Work in progress</a>
+                </small> <br>
+                {% endif %}
+                {% if completed_tasks.count %}
                 <small><span class="badge badge-primary badge-pill">{{ completed_tasks.count }}</span>
-                    <a href="{% url 'taskers:allcompletedtasks' %}"> Completed</a></small> <br>
+                    <a href="{% url 'taskers:allcompletedtasks' %}"> Completed</a>
+                </small> <br>
+                {% endif %}
             </div>
         </div>
         <div class="card-container">

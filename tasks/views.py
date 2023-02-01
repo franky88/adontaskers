@@ -234,9 +234,13 @@ class AllPriorityTaskView(View):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_superuser or request.user.has_perm('auth.view_user'):
-            tasks = Task.objects.filter(is_priority=True).filter(is_done=False)
+            tasks = Task.objects.filter(Q(is_priority=True) & Q(is_done=True))
+            categories = TaskCategory.objects.filter(Q(task__is_priority=True) & Q(task__is_done=True))\
+                .annotate(count=Count('task'))
         else:
             tasks = Task.objects.filter(user=request.user).filter(is_priority=True).filter(is_done=False)
+            categories = TaskCategory.objects.all()\
+                .filter(Q(task__is_priority=True) & Q(task__is_done=True))
         query = request.GET.get('q')
         if query:
             tasks = tasks.filter(
@@ -250,7 +254,7 @@ class AllPriorityTaskView(View):
         paginator = Paginator(tasks, tasks.count())
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        context = {'tasks': tasks, 'title': 'priority tasks', 'page_obj': page_obj,}
+        context = {'tasks': tasks, 'title': 'priority tasks', 'page_obj': page_obj, 'categories': categories}
         return render(request, self.template_name, context)
 
 class AllWIPTaskView(View):

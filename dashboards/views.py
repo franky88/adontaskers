@@ -55,7 +55,8 @@ class DashboardView(View):
             .filter(is_done=False)
         completed = Task.objects.filter(user=request.user) \
             .filter(is_done=True)
-        total_completed = Task.objects.filter(is_done=True)
+        total_completed = Task.objects.filter(is_done=True)\
+            .filter(updated__year=self.today.year, updated__month=self.today.month)
         task_cats = TaskCategory.objects.all()
         user_tasks_per_day = Task.objects.filter(updated__range=[self.start_date, self.end_date]) \
             .filter(is_done=True) \

@@ -23,13 +23,17 @@
     <div class="col-sm-3">
         <div class="card-container">
             <form class="form-inline my-2 my-lg-0">
-                <input style="width: 100%;" class="form-control" type="search" placeholder="Search" aria-label="Search" name="q" value="{{ request.GET.q }}">
+                <input style="width: 100%;" class="form-control" type="search" placeholder="Search tasks" aria-label="Search" name="q" value="{{ request.GET.q }}">
                 <button class="btn btn-outline-success my-2" type="submit" hidden>Search</button>
             </form>
         </div>
         <div class="card-container">
             <strong>Filters</strong>
             <hr>
+            <strong>Categories</strong> <br>
+            {% for cat in categories %}
+                {{cat.count}} {{ cat.name }} <br>
+            {% endfor %}
         </div>
     </div>
     <div class="col-sm-9">
@@ -57,12 +61,10 @@
                                     </small>
                                     &nbsp 
                                 {% endif %}
-                                {% if task.is_done %}
-                                    <i class="fa-regular fa-circle-check text-muted"></i> 
-                                {% endif %}
                                 <a href="{% url 'taskers:taskdetail' task.slug %}">
                                     {{ task.name|truncatechars:"20" }}
-                                </a>
+                                </a><br>
+                                <small class="text-muted"><strong>Code:</strong> {{ task.slug|upper }}</small>
                             </strong>
                         </td>
                         <td>
@@ -78,9 +80,11 @@
                         <td>
                             <small class="text-muted">
                                 {% if task.is_done %}
-                                    <i class="fa-regular fa-circle-check text-muted"></i> 
+                                    <i class="fa-regular fa-circle-check text-muted"></i> Completed
+                                {% else %}
+                                Work in progress
                                 {% endif %}
-                                Completed <br> {{task.updated|date}} | by: 
+                                <br> {{task.updated|date}} | by: 
                                 {% if request.user.is_superuser %}
                                 <a href="{% url 'dashboards:userdetails' task.user.username %}">{{ task.user.username|title }}</a>
                                 {% else %}
