@@ -226,6 +226,7 @@
                         <th>Client name</th>
                         <th>Created</th>
                         <th>Updated</th>
+                        <th>Points</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -242,6 +243,9 @@
                         </td>
                         <td>
                             {{task.updated|date}}
+                        </td>
+                        <td>
+                            {{ task.task_point }}
                         </td>
                         <td>
                             {% if task.is_done %}

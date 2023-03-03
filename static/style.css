@@ -92,3 +92,12 @@
     overflow: auto;
     background-color: #222 !important;
 }
+
+.card-columns {
+    @include media-breakpoint-only(sm) {
+        column-count: 4;
+    }
+    @include media-breakpoint-only(sm) {
+        column-count: 5;
+    }
+}

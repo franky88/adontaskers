@@ -22,7 +22,7 @@
                 {% for cat in tasks_categories %}
                 <small>
                     <span class="badge badge-primary badge-pill">{{cat.total_categories }}</span>
-                    <a href="">{{ cat }}</a>
+                    <a href="?q={{ cat }}">{{ cat }}</a>
                 </small><br>
                 {% endfor %}
             </div>
@@ -36,7 +36,7 @@
                 {% for type in tasks_type %}
                 <small>
                     <span class="badge badge-primary badge-pill">{{type.total_type }}</span>
-                    <a href="">{{ type }}</a>
+                    <a href="?q={{ type }}">{{ type }}</a>
                 </small><br>
                 {% endfor %}
             </div>
@@ -117,7 +117,12 @@
                                     <strong>Work in progress...</strong> <br>
                                     {% endif %}
                                 </small>
-                                <small class="text-muted">Created: {{ task.created|date }} | by {{task.user}}</small>
+                                <small class="text-muted">
+                                    Created: {{ task.created|date }} | by {{task.user}} |
+                                    <!-- {% for comments in task.taskremark_set.all %} -->
+                                    <a tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-html="true" title="Task notes" data-content="{% for comments in task.taskremark_set.all %} '{{ comments.remarks|safe }}' {% endfor %}"><i class="fa-regular fa-comment"></i></a>
+                                    <!-- {% endfor %} -->
+                                </small>
                             </td>
                             <!-- <td>
                                 {{ task.task_category|title }} - ({{ task.task_type|title }})

@@ -21,18 +21,30 @@
 </div> -->
 <div class="row">
     <div class="col-sm-3">
-        <div class="card-container">
+        <!-- <div class="card-container">
             <form class="form-inline my-2 my-lg-0">
                 <input style="width: 100%;" class="form-control" type="search" placeholder="Search tasks" aria-label="Search" name="q" value="{{ request.GET.q }}">
                 <button class="btn btn-outline-success my-2" type="submit" hidden>Search</button>
             </form>
-        </div>
+        </div> -->
         <div class="card-container">
             <strong>Filters</strong>
             <hr>
             <strong>Categories</strong> <br>
+            <!-- <small>
+                <a href="?q=None"><span class="badge badge-primary badge-pill">{{categories.count}}</span> All</a>
+            </small> <br> -->
             {% for cat in categories %}
-                {{cat.count}} {{ cat.name }} <br>
+                <small>
+                    <a href="?q={{cat.name}}"><span class="badge badge-primary badge-pill">{{cat.count}}</span> {{ cat.name }}</a>
+                </small> <br>
+            {% endfor %}
+            <hr>
+            <strong>Type</strong><br>
+            {% for t in type %}
+                <small>
+                    <a href="?q={{t.name}}"><span class="badge badge-primary badge-pill">{{t.count}}</span> {{ t.name }}</a>
+                </small><br>
             {% endfor %}
         </div>
     </div>

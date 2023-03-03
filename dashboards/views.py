@@ -35,16 +35,24 @@ class DashboardView(View):
             .order_by('day')
         active_users = User.objects.filter(is_active=True)
         designers_task_per_day = User.objects.filter(Q(task__is_done=True) & Q(task__updated__date=self.today.date()))\
-            .annotate(total=Count('task'))
+            .annotate(total=Count('task'))\
+            .annotate(total_points=Sum(F('task__task_category__task_point')) + Sum(F('task__task_type__task_point')))
         designer_points = User.objects.filter(Q(is_active=True) & Q(task__is_done=True) & Q(task__updated__year=self.today.year) & Q(task__updated__month=self.today.month))\
             .annotate(total_points=Sum(F('task__task_category__task_point')) + Sum(F('task__task_type__task_point')))\
             .order_by('-total_points')
-            # .filter(task__updated__year=str(self.today.year), task__updated__month=str(self.today.month)) \
-        # print("designer points", designer_points.query)
-        top_designer_points = designer_points[0]
+
+        def top_designer():
+            if designer_points.count() == 0:
+                return 0
+            else:
+                top_designer_points = designer_points[0]
+                return top_designer_points
+
+        print('sample', top_designer())
         tasks_this_month = Task.objects.filter(is_done=True) \
             .filter(updated__year=self.today.year, updated__month=self.today.month)
-        # tasks_this_month = Task.objects.filter(is_done=True).filter(updated__range=[str(self.today.year)+"-"+str(self.today.month)+"-"+"1", str(self.today.year)+"-"+str(self.today.month)+"-"+str(self.last_day_of_the_month)])
+        # tasks_this_month = Task.objects.filter(is_done=True)\
+        # .filter(updated__range=[str(self.today.year)+"-"+str(self.today.month)+"-"+"1", str(self.today.year)+"-"+str(self.today.month)+"-"+str(self.last_day_of_the_month)])
         
         user_total_points = User.objects.filter(username=request.user) \
             .filter(task__is_done=True) \
@@ -53,8 +61,8 @@ class DashboardView(View):
             .filter(is_done=False).filter(is_priority=True)
         on_progress_priority_tasks_total = Task.objects.filter(user=request.user) \
             .filter(is_done=False)
-        completed = Task.objects.filter(user=request.user) \
-            .filter(is_done=True)
+        completed = Task.objects.filter(Q(user=request.user) and Q(is_done=True)) \
+            .filter(updated__year=self.today.year, updated__month=self.today.month)
         total_completed = Task.objects.filter(is_done=True)\
             .filter(updated__year=self.today.year, updated__month=self.today.month)
         task_cats = TaskCategory.objects.all()
@@ -87,7 +95,7 @@ class DashboardView(View):
             'tasks_per_day': tasks_per_day,
             'user_tasks_per_day': user_tasks_per_day,
             'designers_task_per_day': designers_task_per_day,
-            'top_designer_points': top_designer_points
+            'top_designer_points': top_designer()
             }
         return render(request, self.template_name, context)
 

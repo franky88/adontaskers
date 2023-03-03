@@ -29,14 +29,14 @@ class TaskListView(View):
         yesterday = today - timezone.timedelta(days=1)
         if request.user.is_superuser:
             tasks = Task.objects.filter(Q(is_done=False) | Q(updated__date=today.date()))
-            priority_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_priority=True).filter(is_done=False)
-            priority_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_priority=True).filter(is_done=False)
+            # priority_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_priority=True).filter(is_done=False)
+            # priority_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_priority=True).filter(is_done=False)
             priority_tasks = Task.objects.filter(is_done=False).filter(is_priority=True)
-            wip_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_done=False)
-            wip_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_done=False)
+            # wip_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_done=False)
+            # wip_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_done=False)
             wip_tasks = Task.objects.filter(is_done=False)
-            completed_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_done=True)
-            completed_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_done=True)
+            # completed_tasks_today = Task.objects.filter(updated__date=today.date()).filter(is_done=True)
+            # completed_tasks_yesterday = Task.objects.filter(updated__date=yesterday.date()).filter(is_done=True)
             completed_tasks = Task.objects.filter(is_done=True)\
                 .filter(updated__year=today.year, updated__month=today.month)
             print('total today', completed_tasks.count())
@@ -47,14 +47,14 @@ class TaskListView(View):
             form = AdminTaskForm(request.POST or None)
         else:
             tasks = Task.objects.all().filter(user=request.user).filter(is_done=False)
-            priority_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_priority=True).filter(is_done=False)
-            priority_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=False).filter(is_priority=True)
+            # priority_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_priority=True).filter(is_done=False)
+            # priority_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=False).filter(is_priority=True)
             priority_tasks = Task.objects.filter(user=request.user).filter(is_done=False).filter(is_priority=True)
-            wip_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_done=False)
-            wip_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=False)
+            # wip_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_done=False)
+            # wip_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=False)
             wip_tasks = Task.objects.filter(user=request.user).filter(is_done=False)
-            completed_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_done=True)
-            completed_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=True)
+            # completed_tasks_today = Task.objects.filter(user=request.user).filter(updated__date=today.date()).filter(is_done=True)
+            # completed_tasks_yesterday = Task.objects.filter(user=request.user).filter(updated__date=yesterday.date()).filter(is_done=True)
             completed_tasks = Task.objects.filter(user=request.user).filter(is_done=True)\
                 .filter(updated__year=today.year, updated__month=today.month)
             tasks_type = TaskType.objects.filter(Q(task__updated__date=today.date()))\
@@ -71,20 +71,34 @@ class TaskListView(View):
                 .filter(updated__year=today.year, updated__month=today.month)
             wip_tasks = Task.objects.filter(is_done=False)
             priority_tasks = Task.objects.filter(is_done=False).filter(is_priority=True)
+        query = request.GET.get('q')
+        if query:
+            tasks = tasks.filter(
+                Q(user__username__startswith=query) |
+                Q(task_type__name__startswith=query) |
+                Q(task_category__name__startswith=query) |
+                Q(name__startswith=query) |
+                Q(paradise_link__icontains=query) |
+                Q(check_list__name__icontains=query)
+            ).distinct()
         # for p in request.user.has_perms:
         #     print(p)
-        print(request.user.has_perm('auth.view_user'))
+
+        # paginator = Paginator(tasks, tasks.count())
+        # page_number = request.GET.get('page')
+        # page_obj = paginator.get_page(page_number)
+        # print(request.user.has_perm('auth.view_user'))
         context = {
                     'form': form,
                     'tasks': tasks,
                     'today': today,
                     'yesterday': yesterday,
-                    'priority_tasks_today': priority_tasks_today,
-                    'wip_tasks_today': wip_tasks_today,
-                    'completed_tasks_today': completed_tasks_today,
-                    'priority_tasks_yesterday': priority_tasks_yesterday,
-                    'wip_tasks_yesterday': wip_tasks_yesterday,
-                    'completed_tasks_yesterday': completed_tasks_yesterday,
+                    # 'priority_tasks_today': priority_tasks_today,
+                    # 'wip_tasks_today': wip_tasks_today,
+                    # 'completed_tasks_today': completed_tasks_today,
+                    # 'priority_tasks_yesterday': priority_tasks_yesterday,
+                    # 'wip_tasks_yesterday': wip_tasks_yesterday,
+                    # 'completed_tasks_yesterday': completed_tasks_yesterday,
                     'priority_tasks': priority_tasks,
                     'completed_tasks': completed_tasks,
                     'wip_tasks': wip_tasks,
@@ -234,13 +248,13 @@ class AllPriorityTaskView(View):
 
     def get(self, request, *args, **kwargs):
         if request.user.is_superuser or request.user.has_perm('auth.view_user'):
-            tasks = Task.objects.filter(Q(is_priority=True) & Q(is_done=True))
-            categories = TaskCategory.objects.filter(Q(task__is_priority=True) & Q(task__is_done=True))\
+            tasks = Task.objects.filter(Q(is_priority=True) & Q(is_done=False))
+            categories = TaskCategory.objects.filter(Q(task__is_priority=True) & Q(task__is_done=False))\
                 .annotate(count=Count('task'))
         else:
             tasks = Task.objects.filter(user=request.user).filter(is_priority=True).filter(is_done=False)
             categories = TaskCategory.objects.all()\
-                .filter(Q(task__is_priority=True) & Q(task__is_done=True))
+                .filter(Q(task__is_priority=True) & Q(task__is_done=False))
         query = request.GET.get('q')
         if query:
             tasks = tasks.filter(
@@ -265,8 +279,17 @@ class AllWIPTaskView(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_superuser or request.user.has_perm('auth.view_user'):
             tasks = Task.objects.filter(is_done=False)
+            categories = TaskCategory.objects.filter(Q(task__is_done=False)\
+                & Q(task__updated__year=self.today.year)\
+                & Q(task__updated__month=self.today.month))\
+                .annotate(count=Count('task'))
         else:
             tasks = Task.objects.filter(user=request.user).filter(is_done=False)
+            categories = TaskCategory.objects.filter(Q(task__user=request.user)\
+                & Q(task__is_done=False)\
+                & Q(task__updated__year=self.today.year)\
+                & Q(task__updated__month=self.today.month))\
+                .annotate(count=Count('task'))
         query = request.GET.get('q')
         if query:
             tasks = tasks.filter(
@@ -275,12 +298,12 @@ class AllWIPTaskView(View):
                 Q(task_category__name__startswith=query) |
                 Q(name__startswith=query) |
                 Q(paradise_link__icontains=query) |
-                Q(check_list_link__icontains=query)
+                Q(check_list__name__icontains=query)
             ).distinct()
         paginator = Paginator(tasks, tasks.count())
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        context = {'tasks': tasks, 'title': 'work in progress tasks', 'page_obj': page_obj,}
+        context = {'tasks': tasks, 'title': 'work in progress tasks', 'page_obj': page_obj, 'categories': categories}
         return render(request, self.template_name, context)
 
 class AllCompletedTaskView(View):
@@ -292,9 +315,27 @@ class AllCompletedTaskView(View):
         if request.user.is_superuser or request.user.has_perm('auth.view_user'):
             tasks = Task.objects.filter(is_done=True)\
                 .filter(updated__year=self.today.year, updated__month=self.today.month)
+            categories = TaskCategory.objects.filter(Q(task__is_done=True)\
+                & Q(task__updated__year=self.today.year)\
+                & Q(task__updated__month=self.today.month))\
+                .annotate(count=Count('task'))
+            type = TaskType.objects.filter(Q(task__is_done=True)\
+                & Q(task__updated__year=self.today.year)\
+                & Q(task__updated__month=self.today.month))\
+                .annotate(count=Count('task'))
         else:
             tasks = Task.objects.filter(user=request.user).filter(is_done=True)\
                 .filter(updated__year=self.today.year, updated__month=self.today.month)
+            categories = TaskCategory.objects.filter(Q(task__user=request.user) \
+                & Q(task__is_done=True)\
+                & Q(task__updated__year=self.today.year)\
+                & Q(task__updated__month=self.today.month))\
+                .annotate(count=Count('task'))
+            type = TaskType.objects.filter(Q(task__user=request.user)\
+                & Q(task__is_done=True)\
+                & Q(task__updated__year=self.today.year)\
+                & Q(task__updated__month=self.today.month))\
+                .annotate(count=Count('task'))
         # f = TaskFilter(request.GET, queryset=tasks)
         query = request.GET.get('q')
         if query:
@@ -304,12 +345,12 @@ class AllCompletedTaskView(View):
                 Q(task_category__name__startswith=query) |
                 Q(name__startswith=query) |
                 Q(paradise_link__icontains=query) |
-                Q(check_list_link__icontains=query) 
+                Q(check_list__name__icontains=query) 
             ).distinct()
         paginator = Paginator(tasks, tasks.count())
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        context = {'tasks': tasks, 'title': 'completed tasks', 'page_obj': page_obj,}
+        context = {'tasks': tasks, 'title': 'completed tasks', 'page_obj': page_obj, 'categories': categories, 'type': type}
         return render(request, self.template_name, context)
 
 class TasksArchiveView(View):
@@ -319,6 +360,10 @@ class TasksArchiveView(View):
 
     def get(self, request, *args, **kwargs):
         tasks = Task.objects.filter(is_done=True)
+        categories = TaskCategory.objects.filter(Q(task__is_done=True))\
+            .annotate(count=Count('task'))
+        type = TaskType.objects.filter(Q(task__is_done=True))\
+            .annotate(count=Count('task'))
         print(tasks.count())
         query = request.GET.get('q')
         if query:
@@ -328,10 +373,10 @@ class TasksArchiveView(View):
                 Q(task_category__name__startswith=query) |
                 Q(name__startswith=query) |
                 Q(paradise_link__icontains=query) |
-                Q(check_list_link__icontains=query)
+                Q(check_list__name__icontains=query)
             ).distinct()
         paginator = Paginator(tasks, tasks.count())
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
-        context = {'tasks': tasks, 'title': 'archived tasks', 'page_obj': page_obj,}
+        context = {'tasks': tasks, 'title': 'archived tasks', 'page_obj': page_obj, 'categories': categories, 'type': type,}
         return render(request, self.template_name, context)

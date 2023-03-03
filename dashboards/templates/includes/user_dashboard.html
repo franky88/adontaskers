@@ -1,4 +1,4 @@
-{% block scripts %}
+    {% block scripts %}
 <script>
     $(document).ready(function(){
           var ctx = document.getElementById('myPerDayTaskChart').getContext('2d');
@@ -141,6 +141,31 @@
     <div class="col-sm-9">
         <div class="card-container">
             <strong>Tasks</strong>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for task in completed %}
+                    <tr>
+                        <td>{{ task.name }}</td>
+                        <td>{% if task.is_done %}Completed{% else %}Work in progress{% endif %}</td>
+                        <td>
+                            {% if not task.is_done %}
+                            <a href="">Edit</a> |
+                            <a href="">Delete</a>
+                            {% else %}
+                            <a href="">View</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

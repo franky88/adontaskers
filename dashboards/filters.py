@@ -11,7 +11,7 @@ class TaskFilter(django_filters.FilterSet):
             'task_category',
             'name',
             'paradise_link',
-            'check_list_link',
+            # 'check_list_link',
             'is_priority',
             'is_done',
             # 'created': ['exact', 'year__gt'],

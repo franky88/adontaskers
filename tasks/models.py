@@ -40,6 +40,22 @@ class TaskType(BaseTime, models.Model):
     def __str__(self):
         return self.name
 
+class CheckList(models.Model):
+    name = models.CharField(max_length=120, blank=True, null=True)
+    # is_done = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+
+class CheckListType(BaseTime, models.Model):
+    name = models.CharField(max_length=120, blank=True, null=True)
+    is_done = models.BooleanField(default=False)
+    check_list = models.ForeignKey(CheckList, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
 
 class Task(models.Model):
     slug = models.SlugField(unique=True, null=True, blank=True)
@@ -52,8 +68,7 @@ class Task(models.Model):
     name = models.CharField(max_length=120, verbose_name="Client name")
     paradise_link = models.URLField(
         blank=True, null=True, verbose_name="task link")
-    check_list_link = models.URLField(
-        max_length=120, verbose_name='check list link', blank=True, null=True)
+    check_list = models.ForeignKey(CheckList, on_delete=models.CASCADE, default=1)
     # task_note = models.TextField(blank=True, null=True, help_text='Task note for designers')
     is_priority = models.BooleanField(
         default=False, verbose_name="Is Task Priority?", help_text="Checked if task is priority.")
@@ -64,6 +79,11 @@ class Task(models.Model):
 
     class Meta:
         ordering = ['-is_priority', 'is_done', '-updated', '-created']
+
+    @property
+    def task_point(self):
+        points = self.task_type.task_point + self.task_category.task_point
+        return points
 
     def get_absolute_url(self):
         return reverse("taskdetail", kwargs={"slug": self.slug})
@@ -76,7 +96,7 @@ class TaskRemark(BaseTime, models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE, default=1)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
-    remarks = models.TextField(help_text="You can html elements for your notes")
+    remarks = models.TextField(help_text="You can use html elements for your notes")
 
     class Meta:
         ordering = ['-updated', '-created']
