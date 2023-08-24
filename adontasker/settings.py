@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     # local apps
     'tasks',
     'dashboards',
-    'imagegenerators',
     'taskerapi',
     # 3rd party apps
     'crispy_forms',
