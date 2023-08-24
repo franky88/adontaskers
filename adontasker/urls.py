@@ -23,7 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("dashboards.urls")),
     path('tasks/', include("tasks.urls")),
-    path('image-generators/', include("imagegenerators.urls")),
     path('accounts/', include('django.contrib.auth.urls')),
     # path('api-auth/', include('rest_framework.urls')),
     path('taskerapi/', include('taskerapi.urls')),
